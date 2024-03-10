@@ -1,0 +1,3 @@
+# IntelligentInformationExtractor
+
+Frontend code dir
