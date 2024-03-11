@@ -26,12 +26,12 @@ export default function Login(){
     const authenticateUser = () =>{
         
      
-        let loginFields={
+        let loginFields={ 
                 email:loginState['email-address'],
                 password:loginState['password']
         };
            
-        const endpoint= `${BACKEND_URL}/convert`;
+        const endpoint= `${BACKEND_URL}/auth/login`;
          fetch(endpoint,
              {
              method:'POST',
@@ -41,7 +41,7 @@ export default function Login(){
              body:JSON.stringify(loginFields)
              }).then(response=>response.json())
              .then(data=>{
-            
+                console.log(data)
                 //API Success from LoginRadius Login API
              })
              .catch(error=>console.log(error))

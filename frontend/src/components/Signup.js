@@ -4,6 +4,8 @@ import FormAction from "./FormAction";
 import Input from "./Input";
 
 const fields=signupFields;
+
+const BACKEND_URL='http://127.0.0.1:5000'
 let fieldsState={};
 
 fields.forEach(field => fieldsState[field.id]='');
@@ -28,12 +30,32 @@ export default function Signup(){
 
 
       // Passwords match, proceed with account creation
-      setPasswordsMatch(true);
+    setPasswordsMatch(true);
     createAccount()
   }
 
   //handle Signup API Integration here
   const createAccount=()=>{
+    let signupFields={
+      username:signupState['username'],
+      email:signupState['email-address'],
+      password:signupState['password']
+     };
+    
+    const endpoint= `${BACKEND_URL}/auth/signup`;
+    fetch(endpoint,
+      {
+      method:'POST',
+      headers: {
+      'Content-Type': 'application/json'
+      },
+      body:JSON.stringify(signupFields)
+      }).then(response=>response.json())
+      .then(data=>{
+          console.log(data)
+          //API Success from LoginRadius Login API
+      })
+      .catch(error=>console.log(error))
 
   }
 
