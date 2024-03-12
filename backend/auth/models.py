@@ -22,19 +22,21 @@ class Auth:
 
 
     def signup(self):
-        print("in models signup")
-        # if request.method == "OPTIONS":
-        #     response = jsonify({'message': 'OK'})
-        #     response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
-        #     response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
-        #     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-        #     return response
+        print(f"inside models signup")
+        # print(f"request: {request.get_json()}")
+        if request.method == "OPTIONS":
+            print("in models signup: OPTIONS")
+            response = jsonify({'message': 'OK'})
+            response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+            response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+            response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+            return response
         
-        print(f"request: {request.json}")
+        print(f"request: {request}")
         # create the user object
-        username = request.get_json().get("username")
-        email = request.get_json().get("email")
-        password = request.get_json().get("password")
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
         print(f"details received from frontend: username: {username}, email: {email}, password: {password}")
         #password encryption
         password = pbkdf2_sha256.encrypt(password)
@@ -70,23 +72,23 @@ class Auth:
 
     def login(self):
         print("in models login")
-        # if request.method == "OPTIONS":
-            # response = jsonify({'message': 'OK'})
-            # response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
-            # response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
-            # response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-            # return response
-            # return '', 200, {'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': '*'}
+        if request.method == "OPTIONS":
+            response = jsonify({'message': 'OK'})
+            response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+            response.headers.add('Access-Control-Allow-Methods', 'POST, OPTIONS')
+            response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+            return response
+            return '', 200, {'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*', 'Access-Control-Allow-Methods': '*'}
 
-        print(f"request: {request.json}")
+        print(f"request: {request}")
         user_dict = db.users.find_one({
-            "email": request.get_json().get("email")
+            "email": request.form.get("email")
         })
         if not user_dict:
             print("login: Invalid email")
             return jsonify({"error": "Invalid email"}), 401
         user_model = UserModel.from_dict(user_dict)
-        if pbkdf2_sha256.verify(request.get_json().get("password"), user_model.password):
+        if pbkdf2_sha256.verify(request.form.get("password"), user_model.password):
             print("login: Sign in successful")
             return self.start_session(user_model)
         print("login: Invalid password")

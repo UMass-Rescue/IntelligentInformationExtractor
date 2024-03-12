@@ -36,20 +36,24 @@ export default function Signup(){
 
   //handle Signup API Integration here
   const createAccount=()=>{
-    let signupFields={
-      username:signupState['username'],
-      email:signupState['email-address'],
-      password:signupState['password']
-     };
+    // let signupFields={
+    //   username:signupState['username'],
+    //   email:signupState['email-address'],
+    //   password:signupState['password']
+    //  };
+     let signupFields= new FormData();
+     signupFields.append('username',signupState['username']);
+     signupFields.append('email',signupState['email-address']);
+     signupFields.append('password',signupState['password']);
     
     const endpoint= `${BACKEND_URL}/auth/signup`;
     fetch(endpoint,
       {
       method:'POST',
-      headers: {
-      'Content-Type': 'application/json'
-      },
-      body:JSON.stringify(signupFields)
+      // headers: {
+      // 'Content-Type': 'application/json'
+      // },
+      body:signupFields
       }).then(response=>response.json())
       .then(data=>{
           console.log(data)
