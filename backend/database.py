@@ -1,9 +1,9 @@
 import pymongo
 from datetime import datetime
-from app import db
+# from app import db
 
-# client = pymongo.MongoClient('localhost', 27017)
-# db = client.IIE
+client = pymongo.MongoClient('localhost', 27017)
+db = client.IIE
 
 class QAModel:
     def __init__(self, id, question, answer, dateCreated) -> None:
