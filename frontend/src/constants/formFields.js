@@ -33,6 +33,26 @@ const signupFields=[
         placeholder:"Username"   
     },
     {
+        labelText:"Firstname",
+        labelFor:"firstname",
+        id:"firstname",
+        name:"firstname",
+        type:"text",
+        autoComplete:"firstname",
+        isRequired:true,
+        placeholder:"First Name"   
+    },
+    {
+        labelText:"Secondname",
+        labelFor:"secondname",
+        id:"secondname",
+        name:"secondname",
+        type:"text",
+        autoComplete:"secondname",
+        isRequired:true,
+        placeholder:"Last Name"   
+    },
+    {
         labelText:"Email address",
         labelFor:"email-address",
         id:"email-address",
