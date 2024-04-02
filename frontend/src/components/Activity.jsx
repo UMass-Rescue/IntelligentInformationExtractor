@@ -1,79 +1,13 @@
-// import React from "react";
-// import Multiselect from "./Multiselect";
-// import ButtonWithLoading from "./ButttonExtract";
-
-// function Activity() {
-//   return (
-
-//     <div className="flex flex-col py-10 px-16 h-screen overflow-y-auto w-full">
-//       <h2>Activuty</h2>
-
-
-//       <div className="flex justify-center  space-x-8 py-6">
-
-//       <div className="flex flex-col rounded-md border w-[1500px] h-[300px] p-8 justify-center">
-
-//             <div class="flex items-center justify-center w-full">
-//         <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-//             <div class="flex flex-col items-center justify-center pt-5 pb-6">
-//                 <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-//                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-//                 </svg>
-//                 <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-//                 <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-//             </div>
-//             <input id="dropzone-file" type="file" class="hidden" />
-//         </label>
-//         </div> 
-            
-//     </div>
-
-
-
-//       </div>
-  
-
-//       <div className="flex justify-center space-x-8 py-6">
-//         <div className="flex flex-col rounded-md border  w-[730px] h-[150px] p-8 justify-center">
-//           <h2>Please select the file Category</h2>
-        
-//           <Multiselect />
-//         </div>
-//         <div className="flex flex-col rounded-md border w-[730px] h-[150px] p-8 justify-center">
-//           <h2>Please select the Case</h2>
-          
-//           <Multiselect />
-//         </div>
-       
-        
-//       </div>
-
-//       <div className="flex justify-center  space-x-8 py-6">
-      
-//       <div className="flex flex-col rounded-md  w-[800px] h-[150px] p-8 justify-center">
-      
-      
-//       <ButtonWithLoading />
-//     </div>
-      
-//     </div>
-
-
-//     </div>
-//   );
-// }
-
-// export default Activity;
-
 import React, { useState } from "react";
-import Table, { SelectColumnFilter, StatusPill, LocateCell } from "./Table";
+import Table, { SelectColumnFilter, StatusPill, FileLink } from "./Table";
 import "../styles.css";
 
 const getData = () => [
   {
     name: "Jane Cooper",
     email: "jane.cooper@example.com",
-    title: "Regional Paradigm Technician",
+    title: "Missing Child Info Dec 1 2022",
+    date: "Feb 3rd 2023",
     department: "Optimization",
     status: "Active",
     case: "Case 1",
@@ -84,8 +18,9 @@ const getData = () => [
   },
   {
     name: "Cody Fisher",
+    date: "Jan 3rd 2023",
     email: "cody.fisher@example.com",
-    title: "Product Directives Officer",
+    title: "Witness Accounts - Ryan",
     department: "Intranet",
     status: "Active",
     case: "Case 1",
@@ -96,21 +31,23 @@ const getData = () => [
   {
     name: "Esther Howard",
     email: "esther.howard@example.com",
-    title: "Forward Response Developer",
+    title: "Witness Accounts - Kyle",
     department: "Directives",
     status: "Active",
     case: "Case 2",
     file: "Locate",
+    date: "Dec 3rd 2022",
     imgUrl:
       "https://images.unsplash.com/photo-1520813792240-56fc4a3765a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"
   },
   {
     name: "Jenny Wilson",
     email: "jenny.wilson@example.com",
-    title: "Central Security Manager",
+    title: "Abductor Information",
     department: "Program",
     status: "Active",
     case: "Case 4",
+    date: "Jan 3rd 2022",
     file: "Locate",
     imgUrl:
       "https://images.unsplash.com/photo-1498551172505-8ee7ad69f235?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=4&w=256&h=256&q=60"
@@ -118,9 +55,10 @@ const getData = () => [
   {
     name: "Kristin Watson",
     email: "kristin.watson@example.com",
-    title: "Lean Implementation Liaison",
+    title: "Circumstances of Disappearance",
     department: "Mobility",
     status: "Active",
+    date: "Oct 3rd 2022",
     case: "Case 3",
     file: "Locate",
     imgUrl:
@@ -129,8 +67,9 @@ const getData = () => [
   {
     name: "Cameron Williamson",
     email: "cameron.williamson@example.com",
-    title: "Internal Applications Engineer",
+    title: "Circumstances of Disappearance p2",
     department: "Security",
+    date: "Nov 3rd 2022",
     status: "Active",
     case: "Case 4",
     file: "Locate",
@@ -145,19 +84,16 @@ export default function App() {
 
   const columns = React.useMemo(
     () => [
-      {
-        Header: "Name",
-        accessor: "name"
-      },
+     
       {
         Header: "Title",
         accessor: "title"
       },
       {
         Header: "File Uploaded",
-        accessor: "file",
-        Cell: LocateCell,
-        posAccessor: "posCoords"
+        accessor: "imgUrl",
+        Cell: FileLink,
+        
       },
       {
         Header: "Report",
@@ -169,7 +105,12 @@ export default function App() {
         accessor: "case",
         Filter: SelectColumnFilter,
         filter: "includes"
-      }
+      },
+
+       {
+         Header: "Date",
+        accessor: "date"
+      },
     ],
     []
   );

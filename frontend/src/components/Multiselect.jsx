@@ -85,7 +85,7 @@ const Multiselect = ({ value, onChange }) => {
     // state showing if dropdown is open or closed
     const [dropdown, setDropdown] = useState(false);
     // managing dropdown items (list of dropdown items)
-    const [items, setItems] = useState(['cat 1', 'cat 2', 'cat 3', 'cat 4']);
+    const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
     const [caseItems, setCaseItems] = useState(['case 1', 'case 2', 'case 3']);
     // contains selected items
     const [selectedItems, setSelected] = useState([]);

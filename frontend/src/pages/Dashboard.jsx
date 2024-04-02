@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Dashboard from "../components/Dashboard";
 import ActivityPage from "./Activity";
+import Profile from "./Profile";
 
 function DashboardPage() {
   const [selectedItem, setSelectedItem] = useState("Dashboard");
@@ -9,6 +10,7 @@ function DashboardPage() {
   // Function to handle item selection
   const handleNavbarItemClick = (itemName) => {
     setSelectedItem(itemName);
+    console.log(selectedItem)
   };
 
   return (
@@ -21,6 +23,8 @@ function DashboardPage() {
           {/* Pass the selectedItem prop to the Dashboard component */}
           {selectedItem === "Dashboard" && <Dashboard selectedItem={selectedItem} />}
           {selectedItem === "Activity" && <ActivityPage selectedItem={selectedItem} />}
+          {selectedItem === "Profile" && <Profile selectedItem={selectedItem} />}
+
           {/* Add more conditional rendering for other components if needed */}
         </main>
       </div>

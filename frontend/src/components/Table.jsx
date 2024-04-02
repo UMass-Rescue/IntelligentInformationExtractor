@@ -16,8 +16,6 @@ import {
 import { Button, PageButton } from "../shared/Button";
 import { SortDownIcon, SortUpIcon, SortIcon } from "../shared/Icon";
 import { classNames } from "../shared/Utils";
-import { MapProvider } from "./map-context";
-import MarkerButton from "./MarkerButton";
 
 // Define a default UI for filtering
 function GlobalFilter({
@@ -83,37 +81,40 @@ export function SelectColumnFilter({
   );
 }
 
+export function FileLink({value}){
+
+  const handleClick = () => {
+    window.open(value, '_blank');
+  };
+
+  return(
+    <button type="button" onClick={handleClick} class="text-white bg-[#6a5acd] hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-[#6a5acd] dark:hover:bg-purple-700 dark:focus:ring-purple-800">
+    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 14v4.833A1.166 1.166 0 0 1 16.833 20H5.167A1.167 1.167 0 0 1 4 18.833V7.167A1.166 1.166 0 0 1 5.167 6h4.618m4.447-2H20v5.768m-7.889 2.121 7.778-7.778"/>
+  </svg>
+  
+link
+</button>
+
+  )
+
+}
+
 export function StatusPill({ value }) {
-  const status = value ? value.toLowerCase() : "unknown";
+
 
   return (
     <span
       className={classNames(
         "px-3 py-1 uppercase leading-wide font-bold text-xs rounded-full shadow-sm",
-        status.startsWith("active") ? "bg-green-100 text-green-700" : null,
-        status.startsWith("inactive") ? "bg-yellow-100 text-yellow-700" : null,
-        status.startsWith("offline") ? "bg-red-100 text-red-700" : null
+         " text-purple-700" 
       )}
     >
-      {status}
+      report
     </span>
   );
 }
 
-export function LocateCell({ value, column, row }) {
-  // function handleClick() {
-  //   //console.log(flying);
-  //   row.original[column.mapAccessor].flyTo(row.original[column.posAccessor]);
-  // }
-
-  return (
-    <>
-      <MapProvider>
-        <MarkerButton pos={row.original[column.posAccessor]} />
-      </MapProvider>
-    </>
-  );
-}
 
 function Table({ columns, data }) {
   // Use the state and functions returned from useTable to build your UI
