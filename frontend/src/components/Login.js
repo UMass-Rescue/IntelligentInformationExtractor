@@ -24,12 +24,6 @@ export default function Login(){
 
     //Handle Login API Integration here
     const authenticateUser = () =>{
-        
-     
-        // let loginFields={ 
-        //         email:loginState['email-address'],
-        //         password:loginState['password']
-        // };
         let loginFields= new FormData();
         loginFields.append('email',loginState['email-address']);
         loginFields.append('password',loginState['password']);
@@ -38,9 +32,6 @@ export default function Login(){
          fetch(endpoint,
              {
              method:'POST',
-            //  headers: {
-            //  'Content-Type': 'application/json'
-            //  },
              body:loginFields
              }).then(response=>response.json())
              .then(data=>{
