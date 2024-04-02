@@ -1,5 +1,6 @@
 import pymongo
 from datetime import datetime
+from flask import jsonify
 # from app import db
 
 client = pymongo.MongoClient('localhost', 27017)
@@ -274,6 +275,74 @@ def get_qa(userid, caseid, recordid, qaid):
         print("QA not found")
 
 
+def success_message(data):
+    return jsonify({
+        "success": True,
+        "data": data
+        })
+
+def error_message(message):
+    return jsonify({
+        "success": False,
+        "error": message
+        })
+
+
+def getallactivity(email):
+    user = db.users.find_one({"email": email})
+    data = []
+    if user:
+        for case in user["cases"]:
+            case_id = case["id"]
+            case_title = case["title"]
+            for record in case["records"]:
+                record_id = record["id"]
+                record_title = record["title"]
+                record_date = record["dateCreated"]
+                data.append({
+                    "case_id": case_id,
+                    "case_title": case_title,
+                    "record_id": record_id,
+                    "record_title": record_title,
+                    "record_date": record_date,
+                    "user_id": user["id"],
+                })
+                
+        return success_message(data), 200
+    else:
+        print("User not found")
+        return error_message("User not found"), 401
+
+
+def getrecord(email, case_id, record_id):
+    user = db.users.find_one(
+        {
+            "email": email,
+            "cases.id": case_id,
+        },
+        {
+            "id": 1,
+            "cases.$": 1,
+        }
+    )
+    if user:
+        case = user["cases"][0]
+        for record in case["records"]:
+            if record["id"] == record_id:
+                data = {
+                    "case_id": case["id"],
+                    "case_title": case["title"],
+                    "record_id": record["id"],
+                    "record_title": record["title"],
+                    "record_date": record["dateCreated"],
+                    "user_id": user["id"],
+                    "record_description": record["description"],
+                }
+                return success_message(data), 200
+        return error_message("Record not found"), 404
+    else:
+        print("User not found")
+        return error_message("User not found"), 401
 
 #=======================================================
 # Testing database queries 

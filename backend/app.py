@@ -1,8 +1,9 @@
-from flask import Flask, render_template, session, redirect
+from flask import Flask, render_template, session, redirect, request
 from functools import wraps
 import pymongo
 from auth.models import Auth
 from flask_cors import CORS, cross_origin
+import database
 # from dotenv import load_dotenv
 # load_dotenv()
 
@@ -18,6 +19,17 @@ app.add_url_rule('/auth/login/', view_func=login, methods=["OPTIONS", "POST"])
 app.add_url_rule('/auth/signup/', view_func=signup, methods=["OPTIONS", "POST"])
 app.add_url_rule('/auth/signout/', view_func=signout)
 
+@app.route('/activity/all/', methods=["GET"])
+def activity_all():
+    email = request.form.get("email")
+    return database.getallactivity(email)
+
+@app.route('/activity/record/', methods=["GET"])
+def activity_record():
+    email = request.form.get("email")
+    case_id = request.form.get("case_id")
+    record_id = request.form.get("record_id")
+    return database.getrecord(email, case_id, record_id)
 
 if __name__ == "__main__":
     app.run(debug=True)
