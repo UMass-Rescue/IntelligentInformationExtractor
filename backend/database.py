@@ -149,8 +149,6 @@ class UserModel:
             cases = [CaseModel.from_dict(case_dict) for case_dict in user_dict.get("cases", [])]
         )
     
-    # def add_case(self, case):
-    #     self.cases.append(case)
 
 
 #adding data
