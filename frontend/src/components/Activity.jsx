@@ -80,7 +80,6 @@ const getData = () => [
 ];
 
 export default function App() {
-  const [mapFly, setMapFly] = useState(null);
 
   const columns = React.useMemo(
     () => [
@@ -91,7 +90,7 @@ export default function App() {
       },
       {
         Header: "File Uploaded",
-        accessor: "imgUrl",
+        accessor: "url",
         Cell: FileLink,
         
       },

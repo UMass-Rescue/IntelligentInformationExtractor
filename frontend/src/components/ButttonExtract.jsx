@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function ButtonWithLoading({ onClick, isLoading }) {
+function ButtonWithLoading({ onClick, isLoading, onRefresh }) {
   const handleClick = async () => {
     console.log(isLoading, "pppppppp")
     onClick && (await onClick());
@@ -41,7 +41,7 @@ function ButtonWithLoading({ onClick, isLoading }) {
           !isLoading ? "cursor-not-allowed opacity-50" : "hover:bg-purple-100"
         } `}
         disabled={!isLoading}
-        onClick={handleClick}
+        onClick={onRefresh}
       >
         <span>Refresh</span>
         <svg

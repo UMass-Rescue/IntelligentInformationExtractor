@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from 'react';
 import {
   useTable,
   useGlobalFilter,
@@ -14,6 +15,7 @@ import {
   ChevronDoubleLeftIcon
 } from "@heroicons/react/solid";
 import { Button, PageButton } from "../shared/Button";
+import ReportInfo from './ReportInfo';
 import { SortDownIcon, SortUpIcon, SortIcon } from "../shared/Icon";
 import { classNames } from "../shared/Utils";
 
@@ -28,6 +30,7 @@ function GlobalFilter({
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
   }, 200);
+
 
   return (
     <label className="flex gap-x-2 items-baseline">
@@ -100,18 +103,38 @@ link
 
 }
 
+
 export function StatusPill({ value }) {
+  
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => {
+    console.log(isModalOpen)
+    setIsModalOpen(!isModalOpen);
+  };
 
 
   return (
-    <span
-      className={classNames(
-        "px-3 py-1 uppercase leading-wide font-bold text-xs rounded-full shadow-sm",
-         " text-purple-700" 
-      )}
-    >
-      report
-    </span>
+
+    <button
+    onClick={toggleModal}
+    className="block text-purple-700 bg-white-200 hover:bg-purple-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    type="button"
+  >
+  <ReportInfo isModalOpen={isModalOpen} toggleModal={toggleModal} />
+    
+    View Report
+  </button>
+
+    // <span
+    //   className={classNames(
+    //     "px-3 py-1 uppercase leading-wide font-bold text-xs rounded-full shadow-sm",
+    //      " text-purple-700" 
+    //   )}
+    // >
+    //   report
+    // </span>
   );
 }
 

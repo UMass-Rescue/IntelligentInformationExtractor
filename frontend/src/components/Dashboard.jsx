@@ -5,9 +5,11 @@ import ButtonWithLoading from "./ButttonExtract";
 import FileUpload from "./FileUpload";
 
 
+const BACKEND_URL='http://127.0.0.1:5000'
+
 function PageNumbers({ currentPage, totalPages, onPageClick }) {
   const [currentPageSet, setCurrentPageSet] = useState(1);
-
+  
   const firstPageInSet = (currentPageSet - 1) * 10 + 1;
   const lastPageInSet = Math.min(currentPageSet * 10, totalPages);
 
@@ -50,10 +52,11 @@ function PageNumbers({ currentPage, totalPages, onPageClick }) {
 
 function Dashboard() {
   const [filesUploaded, setFilesUploaded] = useState(0);
-  const [category, setCategory] = useState("");
-  const [caseValue, setCaseValue] = useState("");
+  const [category, setCategory] = useState([]);
+  const [caseValue, setCaseValue] = useState([]);
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
+  const[clearFile, setClearFile] = useState(false);
 
   const [responseValPageNumber, setResponseValPageNumber] = useState(1);
   const [responseValCurrentPageNumber, setResponseValCurrentPageNumber] = useState(1);
@@ -64,8 +67,13 @@ function Dashboard() {
 
   const [typingIndex, setTypingIndex] = useState(-1);
 
+  const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
+  const [caseItems, setCaseItems] = useState(['case 1', 'case 2', 'case 3']);
+
+
 
   const handleFileChange = async (file) => {
+    setClearFile(false)
     try {
       setFile(file);
       setFilesUploaded(filesUploaded + 1);
@@ -77,14 +85,23 @@ function Dashboard() {
   };
 
   const handleSubmit = async () => {
+    console.log(category)
+    console.log(caseValue)
+    console.log(file)
     if (!category || !caseValue || !file) {
       setError("Please select file, category, and case.");
       return;
     }
     await backendAPICall();
-    setCategory("");
-    setCaseValue("");
+  };
+
+  const handleRefresh = async () => {
+    setLoading(false)
+   
+    setCategory([]);
+    setCaseValue([]);
     setFile(null); // Reset file state after successful submission
+    setClearFile(true)
 
 
    
@@ -110,25 +127,23 @@ function Dashboard() {
       
       setLoading(true);
       await new Promise(resolve => setTimeout(resolve, 5000));
+      const endpoint= `${BACKEND_URL}/auth/login`;
   
-      // const response = await fetch("http://your-flask-backend-url/process", {
-      //   method: "POST",
-      //   body: formData,
-      // });
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: formData,
+      });
 
-      const response = {
-        ok: true,
-        json: async () => sampleResponseData, // Simulate JSON parsing of response data
-      };
+      // const response = {
+      //   ok: true,
+      //   json: async () => sampleResponseData, // Simulate JSON parsing of response data
+      // };
 
       if (!response.ok) {
         throw new Error("Failed to submit data.");
       } 
       setResponseOk(true)
       const data = await response.json();
-
-     
-
       setLoading(false);
       setError(null);
       setResponse(data['output']);
@@ -153,6 +168,28 @@ function Dashboard() {
   }
 
   useEffect(() => {
+    // Fetch items and caseItems from the backend API when the component mounts
+    const fetchInitialData = async () => {
+      try {
+        const response = await fetch(`${BACKEND_URL}/categories`);
+        const data = await response.json();
+        setItems(data.items);
+
+        const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`);
+        const caseData = await caseResponse.json();
+        setCaseItems(caseData.caseItems);
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+        
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
+
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setTypingIndex((prevIndex) => prevIndex + 1);
     }, 50);
@@ -166,22 +203,22 @@ function Dashboard() {
    
       <div className="flex justify-center space-x-8 py-6">
         <div className="flex flex-col rounded-md border w-[1500px] h-[300px] p-8 justify-center">
-          <FileUpload onFileChange={handleFileChange} />
+          <FileUpload onFileChange={handleFileChange} clearFile={clearFile}  />
         </div>
       </div>
       <div className="flex justify-center space-x-8 py-6">
         <div className="flex flex-col rounded-md border w-[730px] h-[150px] p-8 justify-center">
           <h2>Please select the file Category</h2>
-          <Multiselect value="category" onChange={setCategory} />
+          <Multiselect value="category" onChange={setCategory} items={items} selectedItems1={category}  />
         </div>
         <div className="flex flex-col rounded-md border w-[730px] h-[150px] p-8 justify-center">
           <h2>Please select the Case</h2>
-          <Multiselect value="case" onChange={setCaseValue} />
+          <Multiselect value="case" onChange={setCaseValue} items={caseItems} selectedItems1={caseValue}/>
         </div>
       </div>
       <div className="flex justify-center space-x-8 py-6">
         <div className="flex flex-col rounded-md w-[800px] h-[150px] p-8 justify-center">
-          <ButtonWithLoading onClick={handleSubmit} isLoading={loading} />
+          <ButtonWithLoading onClick={handleSubmit} isLoading={loading} onRefresh={handleRefresh}/>
           {error && (
             <div className="text-red-500 mb-4">
               Error: {error}

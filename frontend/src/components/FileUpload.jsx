@@ -1,6 +1,7 @@
-import React, { useState } from "react";
 
-function FileUpload({ onFileChange }) {
+import React, { useState, useEffect } from "react";
+
+function FileUpload({ onFileChange, clearFile }) {
 
   const [file, setFile] = useState(null);
   const [fileName, setFilename] = useState("");
@@ -23,6 +24,14 @@ function FileUpload({ onFileChange }) {
     setFile(selectedFile)
     setFilename(selectedFile.name)
   };
+
+  useEffect(() => {
+    // Clear file and file name when file state is null
+    if (clearFile) {
+      setFilename("");
+      setFile(null);
+    }
+  }, [clearFile, file]);
 
   return (
     <>
