@@ -57,6 +57,7 @@ function Dashboard() {
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
   const[clearFile, setClearFile] = useState(false);
+  const [caseMap, setCaseMap] = useState({});
 
   const [responseValPageNumber, setResponseValPageNumber] = useState(1);
   const [responseValCurrentPageNumber, setResponseValCurrentPageNumber] = useState(1);
@@ -123,7 +124,7 @@ function Dashboard() {
       formData.append('file', file);
       formData.append('email', "dummy_useremail@gmail.com");
       formData.append('category', category);
-      formData.append('case_id', caseValue);
+      formData.append('case_id', caseMap[caseValue]);
       formData.append('record_description', '')
       formData.append('record_title', '')
       formData.append('current_page', responseValCurrentPageNumber);
@@ -182,12 +183,33 @@ function Dashboard() {
     const fetchInitialData = async () => {
       try {
         const response = await fetch(`${BACKEND_URL}/categories`);
-        const data = await response.json();
-        setItems(data.items);
+        if(response.success){
+          const data = await response.data();
+          setItems(data.categories);
+        }
 
-        const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`);
-        const caseData = await caseResponse.json();
-        setCaseItems(caseData.caseItems);
+        const formData = new FormData();
+        formData.append('email', 'dummyuser@gmail.com');
+    
+        const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`, {
+          method: 'POST', // or 'GET' depending on your backend
+          body: formData
+        });
+
+        
+
+        // const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`);
+        if(caseResponse.success){
+          const data = await caseResponse.data();
+          const newCaseMap = {};
+            data.forEach(({ case_id, case_title }) => {
+              newCaseMap[case_title] = case_id;
+            });
+          setCaseMap(newCaseMap);
+          const caseTitles = data.map(caseData => caseData.case_title);
+          setCaseItems(caseTitles);
+        }
+        
       } catch (error) {
         console.error("Error fetching initial data:", error);
         
