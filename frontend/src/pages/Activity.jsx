@@ -1,5 +1,5 @@
 import React from "react";
-import Activity from "../components/Activity";
+import Activity from "../components/Activity2";
 
 function ActivityPage() {
   return (

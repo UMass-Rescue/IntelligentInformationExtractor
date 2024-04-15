@@ -48,7 +48,7 @@ export default function App() {
       },
       {
         Header: "Report",
-        accessor: "report",
+        accessor: "record_id",
         Cell: StatusPill
       },
       {
