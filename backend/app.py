@@ -4,6 +4,9 @@ import pymongo
 from auth.models import Auth
 from flask_cors import CORS, cross_origin
 import database
+import utils
+import fileserver
+import dummyML
 # from dotenv import load_dotenv
 # load_dotenv()
 
@@ -19,7 +22,7 @@ app.add_url_rule('/auth/login/', view_func=login, methods=["OPTIONS", "POST"])
 app.add_url_rule('/auth/signup/', view_func=signup, methods=["OPTIONS", "POST"])
 app.add_url_rule('/auth/signout/', view_func=signout)
 
-@app.route('/activity/all/', methods=["GET"])
+@app.route('/activity/allrecords/', methods=["GET"])
 def activity_all():
     email = request.form.get("email")
     return database.getallactivity(email)
@@ -30,6 +33,64 @@ def activity_record():
     case_id = request.form.get("case_id")
     record_id = request.form.get("record_id")
     return database.getrecord(email, case_id, record_id)
+
+@app.route('/categories/', methods=["GET"])
+def categories():
+    return utils.get_categories()
+
+@app.route('/caseDetails/', methods=["GET"])
+def get_user_cases():
+    email = request.form.get("email")
+    return database.getAllCases(email)
+
+
+@app.route('/addcase/', methods=["POST"])
+def add_new_case():
+    email = request.form.get("email")
+    database.add_dummy_cases(email)
+    return utils.success_message({
+            "message": "Dummy Cases successfully added"
+        }), 200
+    case_title = request.form.get("case_title")
+    case_description = request.form.get("case_description")
+    case = database.get_case(email, case_title)
+    if case is not None:
+        return utils.error_message("Case already exists"), 400
+    case = database.CaseModel(id=utils.generate_uuid(), title=case_title, description=case_description,dateCreated=utils.get_date()).to_dict()
+    res = database.add_case(email, case)
+    if res:
+        return utils.success_message({
+            "message": "Case successfully added"
+        }), 200
+    else:
+        return utils.error_message("Case not added"), 400
+
+
+@app.route('/activity/uploadrecord/', methods=["POST"])
+def activity_uploadrecord():
+    print("in activity_uploadrecord")
+    email = request.form.get("email")
+    user_id = request.form.get("user_id") #TODO: checck this id
+    case_id = request.form.get("case_id")
+    record_title = request.form.get("record_title")
+    record_description = request.form.get("record_description")
+    file = request.files['file']
+    categories = request.form.getlist("categories")
+    
+    record_id = utils.generate_uuid()
+    record_filepath = fileserver.save_file_to_fileserver(file, user_id, case_id, record_id)
+    output = dummyML.process_file(file, categories)
+
+    record = database.RecordModel(id=record_id, title=record_title, description=record_description,dateCreated=utils.get_date(),source="local", fileLocation=record_filepath, transcript="", historyQA=output).to_dict()
+    database.add_record(email, case_id, record)
+
+    data = {
+        "record_id": record_id,
+        "record_filepath" : record_filepath,
+        "record_history" : output
+    }
+    return utils.success_message(data), 200
+
 
 if __name__ == "__main__":
     app.run(debug=True)
