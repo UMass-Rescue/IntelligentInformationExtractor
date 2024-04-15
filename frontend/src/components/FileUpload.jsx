@@ -26,7 +26,6 @@ function FileUpload({ onFileChange, clearFile }) {
   };
 
   useEffect(() => {
-    // Clear file and file name when file state is null
     if (clearFile) {
       setFilename("");
       setFile(null);

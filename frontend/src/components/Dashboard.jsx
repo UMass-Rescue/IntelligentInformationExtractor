@@ -61,7 +61,8 @@ function Dashboard() {
   const [responseValPageNumber, setResponseValPageNumber] = useState(1);
   const [responseValCurrentPageNumber, setResponseValCurrentPageNumber] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [responseVal, setResponse] = useState('');
+  const [isError, setIsError] = useState(false);
+  const [responseVal, setResponse] = useState({});
 
   const [responseValOk, setResponseOk] = useState(false);
 
@@ -78,9 +79,12 @@ function Dashboard() {
       setFile(file);
       setFilesUploaded(filesUploaded + 1);
       setError(null);
+      setIsError(false)
+  
     } catch (error) {
       console.error("Error uploading file:", error);
       setError(error.message);
+      setIsError(true)
     }
   };
 
@@ -90,6 +94,7 @@ function Dashboard() {
     console.log(file)
     if (!category || !caseValue || !file) {
       setError("Please select file, category, and case.");
+ 
       return;
     }
     await backendAPICall();
@@ -116,8 +121,11 @@ function Dashboard() {
         total_page: 10,
       };
       formData.append('file', file);
+      formData.append('email', "dummy_useremail@gmail.com");
       formData.append('category', category);
-      formData.append('case', caseValue);
+      formData.append('case_id', caseValue);
+      formData.append('record_description', '')
+      formData.append('record_title', '')
       formData.append('current_page', responseValCurrentPageNumber);
       console.log(formData)
 
@@ -127,7 +135,7 @@ function Dashboard() {
       
       setLoading(true);
       await new Promise(resolve => setTimeout(resolve, 5000));
-      const endpoint= `${BACKEND_URL}/auth/login`;
+      const endpoint= `${BACKEND_URL}/activity/uploadrecord/`;
   
       const response = await fetch(endpoint, {
         method: "POST",
@@ -139,14 +147,15 @@ function Dashboard() {
       //   json: async () => sampleResponseData, // Simulate JSON parsing of response data
       // };
 
-      if (!response.ok) {
+      if (!response.success) {
         throw new Error("Failed to submit data.");
       } 
       setResponseOk(true)
       const data = await response.json();
       setLoading(false);
       setError(null);
-      setResponse(data['output']);
+      setIsError(false)
+      setResponse(data['data']);
       setResponseValPageNumber(data['total_page']);
       setTypingIndex(0);
     } catch (error) {
@@ -155,6 +164,7 @@ function Dashboard() {
       setResponse('');
       console.error("Error submitting data:", error);
       setError("Failed to submit data.");
+      setIsError(true)
     }
    
    
@@ -218,7 +228,7 @@ function Dashboard() {
       </div>
       <div className="flex justify-center space-x-8 py-6">
         <div className="flex flex-col rounded-md w-[800px] h-[150px] p-8 justify-center">
-          <ButtonWithLoading onClick={handleSubmit} isLoading={loading} onRefresh={handleRefresh}/>
+          <ButtonWithLoading onClick={handleSubmit} isLoading={loading} onRefresh={handleRefresh} isError={isError}/>
           {error && (
             <div className="text-red-500 mb-4">
               Error: {error}
@@ -226,6 +236,8 @@ function Dashboard() {
           )}
         </div>
       </div>
+   
+
       {responseValOk ? (
         <div className="flex justify-center space-x-8 py-6">
           <div className="flex flex-col rounded-md border w-[1500px] h-[900px] p-8 items-center">
@@ -233,13 +245,23 @@ function Dashboard() {
             <div className='right-container-header'>
               <PageNumbers currentPage={responseValCurrentPageNumber} totalPages={responseValPageNumber} onPageClick={pageClick} />
             </div>
-            <>
-              <pre className="response">{responseVal.substring(0, typingIndex)}</pre>
-              <span className="cursor" style={{ left: `${responseVal.length}px` }}></span>
-            </>
+            <div>
+              {/* Iterate through record_history and display category and dynamic keys with values */}
+              {responseVal.data.record_history.map((record, index) => (
+                <div key={index}>
+                  <h5>Category: {record.category}</h5>
+                  {/* Iterate through the keys of output */}
+                  {Object.keys(record.output).map((key, index) => (
+                    <p key={index}>{key}: {record.output[key]}</p>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       ) : null}
+
+
 
       
     </div>

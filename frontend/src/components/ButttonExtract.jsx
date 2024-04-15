@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 
-function ButtonWithLoading({ onClick, isLoading, onRefresh }) {
+function ButtonWithLoading({ onClick, isLoading, onRefresh, isError }) {
   const handleClick = async () => {
-    console.log(isLoading, "pppppppp")
     onClick && (await onClick());
   };
 
@@ -40,7 +39,7 @@ function ButtonWithLoading({ onClick, isLoading, onRefresh }) {
         className={`group relative w-full flex justify-center py-5 px-4 border  text-sm font-medium rounded-md text-purple-800 bg-grey focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 mt-10 ${
           !isLoading ? "cursor-not-allowed opacity-50" : "hover:bg-purple-100"
         } `}
-        disabled={!isLoading}
+        disabled={!isLoading || isError}
         onClick={onRefresh}
       >
         <span>Refresh</span>
