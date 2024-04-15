@@ -2,36 +2,38 @@ import pymongo
 from datetime import datetime
 from flask import jsonify
 # from app import db
+import utils
+from bson import ObjectId
 
 client = pymongo.MongoClient('localhost', 27017)
 db = client.IIE
 
-class QAModel:
-    def __init__(self, id, question, answer, dateCreated="") -> None:
-        self.id = id
-        self.question = question
-        self.answer = answer
-        self.dateCreated = dateCreated
+# class QAModel:
+#     def __init__(self, category,  dateCreated="") -> None:
+#         self.id = id
+#         self.question = question
+#         self.answer = answer
+#         self.dateCreated = dateCreated
 
-    def __str__(self) -> str:
-        return f"QAModel: id: {self.id}, question: {self.question}, answer: {self.answer}, dateCreated: {self.dateCreated}"
+#     def __str__(self) -> str:
+#         return f"QAModel: id: {self.id}, question: {self.question}, answer: {self.answer}, dateCreated: {self.dateCreated}"
 
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "question": self.question,
-            "answer": self.answer,
-            "dateCreated": self.dateCreated
-        }
+#     def to_dict(self) -> dict:
+#         return {
+#             "id": self.id,
+#             "question": self.question,
+#             "answer": self.answer,
+#             "dateCreated": self.dateCreated
+#         }
     
-    @classmethod
-    def from_dict(cls, qa_dict):
-        return cls(
-            id = qa_dict.get("id", 0),
-            question = qa_dict.get("question", ""),
-            answer = qa_dict.get("answer", ""),
-            dateCreated = qa_dict.get("dateCreated", "")
-        )
+#     @classmethod
+#     def from_dict(cls, qa_dict):
+#         return cls(
+#             id = qa_dict.get("id", 0),
+#             question = qa_dict.get("question", ""),
+#             answer = qa_dict.get("answer", ""),
+#             dateCreated = qa_dict.get("dateCreated", "")
+#         )
 
 class RecordModel:
     def __init__(self, id, title="Untitled", description="No description yet!", dateCreated="", dateLastAnalysed="", source="", fileLocation="", transcript="", historyQA=[]):
@@ -43,7 +45,7 @@ class RecordModel:
         self.source = source
         self.fileLocation = fileLocation
         self.transcript = transcript
-        self.historyQA = historyQA    #list of QAModel objects
+        self.historyQA = historyQA 
 
     def __str__(self) -> str:
         return f"RecordModel: id: {self.id}, title: {self.title}, description: {self.description}, dateCreated: {self.dateCreated}, dateLastAnalysed: {self.dateLastAnalysed}, source: {self.source}, fileLocation: {self.fileLocation}, transcript: {self.transcript}, historyQA: {self.historyQA}"
@@ -58,7 +60,7 @@ class RecordModel:
             "source": self.source,
             "fileLocation": self.fileLocation,
             "transcript": self.transcript,
-            "historyQA": [qa.to_dict() for qa in self.historyQA]
+            "historyQA": self.historyQA #[qa.to_dict() for qa in self.historyQA]
         }
     
     @classmethod
@@ -72,7 +74,7 @@ class RecordModel:
             source = record_dict.get("source", ""),
             fileLocation = record_dict.get("fileLocation", ""),
             transcript = record_dict.get("transcript", ""),
-            historyQA = [QAModel.from_dict(qa) for qa in record_dict.get("historyQA", [])]
+            historyQA = record_dict.get("historyQA", []) #[QAModel.from_dict(qa) for qa in record_dict.get("historyQA", [])]
         )
 
 class CaseModel:
@@ -109,8 +111,8 @@ class CaseModel:
         )
 
 class UserModel:
-    def __init__(self, id, username, email, password, fullname="", dateJoined="", teamName="No team name", cases=[]) -> None:
-        self.id = id
+    def __init__(self, username, email, password, fullname="", dateJoined="", teamName="No team name", cases=[]) -> None:
+        self._id = 0
         self.username = username
         self.fullname = fullname
         self.email = email
@@ -120,11 +122,11 @@ class UserModel:
         self.cases = cases          #list of CaseModel objects
 
     def __str__(self) -> str:
-        return f"UserModel: id: {self.id}, username: {self.username}, fullname: {self.fullname}, email: {self.email}, password: {self.password}, dateJoined: {self.date}, teamName: {self.teamName}, cases: {self.cases}"
+        return f"UserModel: _id: {self._id}, username: {self.username}, fullname: {self.fullname}, email: {self.email}, password: {self.password}, dateJoined: {self.date}, teamName: {self.teamName}, cases: {self.cases}"
     
     def to_dict(self) -> dict:
         return {
-            "id": self.id,
+            "_id": self._id,
             "username": self.username,
             "fullname": self.fullname,
             "email": self.email,
@@ -137,7 +139,7 @@ class UserModel:
     @classmethod
     def from_dict(cls, user_dict):
         return cls(
-            id = user_dict.get("id",0),
+            _id = user_dict.get("_id",0),
             username = user_dict.get("username", ""),
             fullname = user_dict.get("fullname", ""),
             email = user_dict.get("email", ""),
@@ -147,40 +149,63 @@ class UserModel:
             cases = [CaseModel.from_dict(case_dict) for case_dict in user_dict.get("cases", [])]
         )
     
-    def add_case(self, case):
-        self.cases.append(case)
 
 
 #adding data
-def add_case(userid, case):
+def add_case(email, case):
+    case = get_case(email, case["title"])
+    if case is not None:
+        print("Case already exists")
+        return False
     result = db.users.update_one(
-        {"id": userid}, 
+        # {"_id": userid}, 
+        {"email": email},
         {"$push": {"cases": case}}    
     )
     if result.modified_count > 0:
         print("Case added")
+        return True
     else:
         print(result)
         print("Case not added")
+        return False
 
-def add_record(userid, caseid, record):
-    db.users.update_one(
-        {"id": userid, "cases.id": caseid},
+def add_record(email, caseid, record):
+    user = db.users.find_one({"email": email})
+    if user:
+        for case in user["cases"]:
+            if case["id"] == caseid:
+                print("case found")
+    else:
+        print("User not found")
+    #TODO: check for existing record 
+    result = db.users.update_one(
+        {"email": email, "cases.id": caseid},
         {"$push": {"cases.$.records": record}},
     )
+    if result.modified_count > 0:
+        print("Record added")
+    else:
+        print(result)
+        print("Record not added")
 
 def add_qa(userid, caseid, recordid, qa):
-    db.users.update_one(
-        {"id": userid, "cases.id": caseid, "cases.records.id": recordid},
+    result = db.users.update_one(
+        {"_id": userid, "cases.id": caseid, "cases.records.id": recordid},
         {"$push": {"cases.$.records.$.historyQA": qa}},
     )
+    if result.modified_count > 0:
+        print("QA added")
+    else:
+        print(result)
+        print("QA not added")
 
 
 
 #updating data
 def update_user(userid, user):
     result = db.users.update_one(
-        {"id": userid},
+        {"_id": userid},
         {"$set": {"username": user["username"],
                 "fullname": user["fullname"],
                 "email": user["email"],
@@ -195,7 +220,7 @@ def update_user(userid, user):
 
 def update_case(userid, caseid, case):
     result = db.users.update_one(
-        {"id": userid, "cases.id": caseid},
+        {"_id": userid, "cases.id": caseid},
         {"$set": {"cases.$.title": case["title"],
                 "cases.$.description": case["description"]}},
     )
@@ -206,7 +231,7 @@ def update_case(userid, caseid, case):
 
 def update_record(userid, caseid, recordid, record):
     result = db.users.update_one(
-        {"id": userid, "cases.id": caseid, "cases.records.id": recordid},
+        {"_id": userid, "cases.id": caseid, "cases.records.id": recordid},
         {"$set": {"cases.$.records.$.title": record["title"],
                 "cases.$.records.$.description": record["description"]}},
     )
@@ -218,28 +243,31 @@ def update_record(userid, caseid, recordid, record):
 
 
 #getting data
-def get_user(userid):
-    user = db.users.find_one({"id": userid})
+def get_user(email):
+    # user = db.users.find_one({"_id": userid})
+    user = db.users.find_one({"email": email})
     if user:
         return user
     else:
         print("User not found")
 
-def get_cases(userid):
-    user = db.users.find_one({"id": userid})
+def get_cases(email):
+    # user = db.users.find_one({"_id": userid})
+    user = db.users.find_one({"email": email})
     if user:
-        user["cases"]
+        return user["cases"]
     else:
         print("User not found")
         
-def get_case(userid, caseid):
-    user = db.users.find_one({"id": userid})
+def get_case(email, case_title):
+    user = db.users.find_one({"email": email})
     if user:
         for case in user["cases"]:
-            if case["id"] == caseid:
+            if case["title"] == case_title:
                 return case
     else:
         print("User not found")
+        return None
 
 def get_records(userid, caseid):
     case = get_case(userid, caseid)
@@ -265,15 +293,6 @@ def get_qahistory(userid, caseid, recordid):
         print("Record not found")
 
 
-def get_qa(userid, caseid, recordid, qaid):
-    qahistory = get_qahistory(userid, caseid, recordid)
-    if qahistory:
-        for qa in qahistory:
-            if qa["id"] == qaid:
-                return qa
-    else:
-        print("QA not found")
-
 
 def success_message(data):
     return jsonify({
@@ -286,6 +305,23 @@ def error_message(message):
         "success": False,
         "error": message
         })
+
+def getAllCases(email):
+    user = db.users.find_one({"email": email})
+    data = []
+    if user:
+        for case in user["cases"]:
+            case_id = case["id"]
+            case_title = case["title"]
+            data.append({
+                "case_id": case_id,
+                "case_title": case_title
+            })
+        return success_message(data), 200
+    else:
+        print("User not found")
+        return error_message("User not found"), 401
+
 
 
 def getallactivity(email):
@@ -305,7 +341,7 @@ def getallactivity(email):
                     "record_id": record_id,
                     "record_title": record_title,
                     "record_date": record_date,
-                    "user_id": user["id"],
+                    "user_id": str(user["_id"]),
                 })
                 
         return success_message(data), 200
@@ -335,14 +371,23 @@ def getrecord(email, case_id, record_id):
                     "record_id": record["id"],
                     "record_title": record["title"],
                     "record_date": record["dateCreated"],
-                    "user_id": user["id"],
+                    "user_id": str(user["_id"]),
                     "record_description": record["description"],
+                    "record_history": record["historyQA"]
                 }
                 return success_message(data), 200
         return error_message("Record not found"), 404
     else:
-        print("User not found")
-        return error_message("User not found"), 401
+        print("Data (record, case, user ) not found")
+        return error_message("Data not found, record or case is not a valid entry"), 401
+
+
+
+def add_dummy_cases(email):
+    for i in range(1,6):
+       case = CaseModel(id=utils.generate_uuid(), title=f"case {i}", description=f"case description {i}",dateCreated=utils.get_date()).to_dict()
+       add_case(email, case)
+
 
 #=======================================================
 # Testing database queries 
