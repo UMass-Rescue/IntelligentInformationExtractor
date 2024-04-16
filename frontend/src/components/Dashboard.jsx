@@ -5,12 +5,12 @@ import ButtonWithLoading from "./ButttonExtract";
 import FileUpload from "./FileUpload";
 
 
-const BACKEND_URL='http://127.0.0.1:5000'
+const BACKEND_URL = 'http://127.0.0.1:5000'
 const email = 'dummy@gmail.com'
 
 function PageNumbers({ currentPage, totalPages, onPageClick }) {
   const [currentPageSet, setCurrentPageSet] = useState(1);
-  
+
   const firstPageInSet = (currentPageSet - 1) * 10 + 1;
   const lastPageInSet = Math.min(currentPageSet * 10, totalPages);
 
@@ -22,31 +22,31 @@ function PageNumbers({ currentPage, totalPages, onPageClick }) {
   return (
     <nav aria-label="Page navigation example">
       <ul className="list-style-none flex">
-      <li>
-              <button
-                  className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
-                  onClick={() => setCurrentPageSet(currentPageSet - 1)} disabled={lastPageInSet >= totalPages}>Previous</button>
-          </li>
-
-      {pageNumbers.map((pageNumber) => (
-
-        
         <li>
-            <button  className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
-            key={pageNumber} onClick={() => onPageClick(pageNumber)} disabled={pageNumber === currentPage}>
-              {pageNumber}
-            </button>
-            </li>
-          ))}
+          <button
+            className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+            onClick={() => setCurrentPageSet(currentPageSet - 1)} disabled={lastPageInSet >= totalPages}>Previous</button>
+        </li>
+
+        {pageNumbers.map((pageNumber) => (
+
 
           <li>
-              <button
-                  className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
-                  onClick={() => setCurrentPageSet(currentPageSet + 1)} disabled={lastPageInSet >= totalPages}>Next</button>
+            <button className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+              key={pageNumber} onClick={() => onPageClick(pageNumber)} disabled={pageNumber === currentPage}>
+              {pageNumber}
+            </button>
           </li>
+        ))}
+
+        <li>
+          <button
+            className="relative block rounded bg-transparent px-3 py-1.5 text-sm text-neutral-600 transition-all duration-300 hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-700 dark:hover:text-white"
+            onClick={() => setCurrentPageSet(currentPageSet + 1)} disabled={lastPageInSet >= totalPages}>Next</button>
+        </li>
 
       </ul>
-  </nav>
+    </nav>
   );
 }
 
@@ -57,7 +57,7 @@ function Dashboard() {
   const [caseValue, setCaseValue] = useState([]);
   const [file, setFile] = useState(null);
   const [error, setError] = useState(null);
-  const[clearFile, setClearFile] = useState(false);
+  const [clearFile, setClearFile] = useState(false);
   const [caseMap, setCaseMap] = useState({});
 
   const [catResponse, setCatResponse] = useState({});
@@ -67,13 +67,15 @@ function Dashboard() {
   const [responseValCurrentPageNumber, setResponseValCurrentPageNumber] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [responseVal, setResponseVal] = useState({});
+  const [responseVal, setResponseVal] = useState([]);
+  const [jsonData, setJsonData] = useState([]);
+
 
   const [responseValOk, setResponseOk] = useState(false);
 
   const [typingIndex, setTypingIndex] = useState(-1);
   const [items, setItems] = useState([]);
-  
+
 
   // const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
   const [caseItems, setCaseItems] = useState(['case 1', 'case 2', 'case 3']);
@@ -87,7 +89,7 @@ function Dashboard() {
       setFilesUploaded(filesUploaded + 1);
       setError(null);
       setIsError(false)
-  
+
     } catch (error) {
       console.error("Error uploading file:", error);
       setError(error.message);
@@ -101,7 +103,7 @@ function Dashboard() {
     console.log(file)
     if (!category || !caseValue || !file) {
       setError("Please select file, category, and case.");
- 
+
       return;
     }
     await backendAPICall();
@@ -109,14 +111,14 @@ function Dashboard() {
 
   const handleRefresh = async () => {
     setLoading(false)
-   
+
     setCategory([]);
     setCaseValue([]);
     setFile(null); // Reset file state after successful submission
     setClearFile(true)
 
 
-   
+
   };
 
   const backendAPICall = async () => {
@@ -139,13 +141,13 @@ function Dashboard() {
       for (const entry of formData.entries()) {
         console.log(entry);
       }
-      
+
       setLoading(true);
       await new Promise(resolve => setTimeout(resolve, 5000));
-      const endpoint= `${BACKEND_URL}/activity/uploadrecord/`;
+      const endpoint = `${BACKEND_URL}/activity/uploadrecord/`;
 
-      
-  
+
+
       const response1 = await fetch(endpoint, {
         method: "POST",
         body: formData,
@@ -155,14 +157,49 @@ function Dashboard() {
 
       if (!response.success) {
         throw new Error("Failed to submit data.");
-      } 
-     
+      }
+
       setLoading(false);
       setError(null);
       setIsError(false)
-      setResponseVal(response);
-      console.log(responseVal)
+      console.log(response)
+      const x = response.data
+      const record_history = response.data.record_history
+      console.log("record_history", record_history)
+      console.log(x)
+      console.log(x.record_history)
+      setResponseVal(record_history);
+      console.log(response)
+      console.log("responseval:", responseVal)
       console.log(responseVal.data)
+
+      const json = [
+        {
+          "category": "<category 1 name>",
+          "output": {
+            "prompt1": "ml output 1",
+            "prompt2": "ml output 2"
+          }
+        },
+        {
+          "category": "<category 2 name>",
+          "output": {
+            "prompt1": "ml output 1",
+            "prompt2": "ml output 2"
+          }
+        }
+        // Add more data as needed
+      ];
+
+      // Make a copy of the parsed data
+      const copiedData = [...json];
+
+      // Set the copied data to state
+      setJsonData(copiedData);
+      console.log("jsondata:==============", jsonData)
+
+
+
 
       console.log(responseVal.data['record_history'])
       console.log(responseVal.data.record_history)
@@ -179,8 +216,8 @@ function Dashboard() {
       setError("Failed to submit data.");
       setIsError(true)
     }
-   
-   
+
+
   }
 
 
@@ -192,12 +229,12 @@ function Dashboard() {
 
   useEffect(() => {
 
-    
+
 
 
 
     // const endpoint= `${BACKEND_URL}/auth/login`;
- 
+
 
 
 
@@ -215,21 +252,21 @@ function Dashboard() {
           body: formData
         });
         const data1 = await response.json();
-    
+
         if (data1.success) {
           console.log(data1, "data1")
-            const data =  data1.data;
-            const newCaseMap = {};
-              data.forEach(({ case_id, case_title }) => {
-                newCaseMap[case_title] = case_id;
-              });
-              console.log(newCaseMap, "map 111")
-            setCaseMap(newCaseMap);
-            console.log(caseMap)
-            const caseTitles = data.map(caseData => caseData.case_title);
-            setCaseItems(caseTitles);
-            console.log(caseItems)
-          
+          const data = data1.data;
+          const newCaseMap = {};
+          data.forEach(({ case_id, case_title }) => {
+            newCaseMap[case_title] = case_id;
+          });
+          console.log(newCaseMap, "map 111")
+          setCaseMap(newCaseMap);
+          console.log(caseMap)
+          const caseTitles = data.map(caseData => caseData.case_title);
+          setCaseItems(caseTitles);
+          console.log(caseItems)
+
 
 
         }
@@ -245,7 +282,8 @@ function Dashboard() {
         const data = await response.json();
         console.log(data);
         setCatResponse(data);
-    
+        console.log(catResponse);
+
         if (data.success) {
           const categories = data.data.categories;
           console.log(categories, "data");
@@ -257,9 +295,9 @@ function Dashboard() {
 
 
       // try {
-        
-   
-        
+
+
+
 
       //   // const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`);
       //   if(caseResponse.success){
@@ -272,10 +310,10 @@ function Dashboard() {
       //     const caseTitles = data.map(caseData => caseData.case_title);
       //     setCaseItems(caseTitles);
       //   }
-        
+
       // } catch (error) {
       //   console.error("Error fetching initial data:", error);
-        
+
       // }
     };
 
@@ -295,25 +333,25 @@ function Dashboard() {
   return (
     <div className="flex flex-col py-10 px-16 h-screen overflow-y-auto w-full">
       <h2>Dashboard</h2>
-   
+
       <div className="flex justify-center space-x-8 py-6">
         <div className="flex flex-col rounded-md border w-[1500px] h-[300px] p-8 justify-center">
-          <FileUpload onFileChange={handleFileChange} clearFile={clearFile}  />
+          <FileUpload onFileChange={handleFileChange} clearFile={clearFile} />
         </div>
       </div>
       <div className="flex justify-center space-x-8 py-6">
         <div className="flex flex-col rounded-md border w-[730px] h-[150px] p-8 justify-center">
           <h2>Please select the file Category</h2>
-          <Multiselect value="category" onChange={setCategory} items={items} selectedItems1={category}  />
+          <Multiselect value="category" onChange={setCategory} items={items} selectedItems1={category} />
         </div>
         <div className="flex flex-col rounded-md border w-[730px] h-[150px] p-8 justify-center">
           <h2>Please select the Case</h2>
-          <Multiselect value="case" onChange={setCaseValue} items={caseItems} selectedItems1={caseValue}/>
+          <Multiselect value="case" onChange={setCaseValue} items={caseItems} selectedItems1={caseValue} />
         </div>
       </div>
       <div className="flex justify-center space-x-8 py-6">
         <div className="flex flex-col rounded-md w-[800px] h-[150px] p-8 justify-center">
-          <ButtonWithLoading onClick={handleSubmit} isLoading={loading} onRefresh={handleRefresh} isError={isError}/>
+          <ButtonWithLoading onClick={handleSubmit} isLoading={loading} onRefresh={handleRefresh} isError={isError} />
           {error && (
             <div className="text-red-500 mb-4">
               Error: {error}
@@ -321,7 +359,7 @@ function Dashboard() {
           )}
         </div>
       </div>
-   
+
 
       {responseValOk ? (
         <div className="flex justify-center space-x-8 py-6">
@@ -348,7 +386,7 @@ function Dashboard() {
 
 
 
-      
+
     </div>
   );
 }

@@ -22,7 +22,7 @@ app.add_url_rule('/auth/login/', view_func=login, methods=["OPTIONS", "POST"])
 app.add_url_rule('/auth/signup/', view_func=signup, methods=["OPTIONS", "POST"])
 app.add_url_rule('/auth/signout/', view_func=signout)
 
-@app.route('/activity/allrecords/', methods=["GET"])
+@app.route('/activity/allrecords/', methods=["POST"])
 def activity_all():
     email = request.form.get("email")
     return database.getallactivity(email)
@@ -38,9 +38,10 @@ def activity_record():
 def categories():
     return utils.get_categories()
 
-@app.route('/caseDetails/', methods=["GET"])
+@app.route('/caseDetails/', methods=["POST"])
 def get_user_cases():
     email = request.form.get("email")
+    print(f"email: {email}")
     return database.getAllCases(email)
 
 
@@ -89,6 +90,7 @@ def activity_uploadrecord():
         "record_filepath" : record_filepath,
         "record_history" : output
     }
+    print(f"uploadrecord: data: {data}")
     return utils.success_message(data), 200
 
 

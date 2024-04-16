@@ -6,7 +6,7 @@ import utils
 from bson import ObjectId
 
 client = pymongo.MongoClient('localhost', 27017)
-db = client.IIE
+db = client.IIE2
 
 # class QAModel:
 #     def __init__(self, category,  dateCreated="") -> None:
@@ -307,6 +307,7 @@ def error_message(message):
         })
 
 def getAllCases(email):
+    print("getAllCases")
     user = db.users.find_one({"email": email})
     data = []
     if user:
@@ -317,6 +318,7 @@ def getAllCases(email):
                 "case_id": case_id,
                 "case_title": case_title
             })
+        print(f"caseDetails: data: {data}")
         return success_message(data), 200
     else:
         print("User not found")
@@ -343,7 +345,7 @@ def getallactivity(email):
                     "record_date": record_date,
                     "user_id": str(user["_id"]),
                 })
-                
+        print(f"allrecords: data: {data}")
         return success_message(data), 200
     else:
         print("User not found")

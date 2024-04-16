@@ -10,7 +10,7 @@ import utils
 from bson import ObjectId
 
 client = pymongo.MongoClient("mongodb://localhost:27017")
-db = client.IIE
+db = client.IIE2
 
 def get_case_list(user_email):
     user = db.users.find_one({"email": user_email})
