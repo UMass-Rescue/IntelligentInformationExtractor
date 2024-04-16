@@ -60,6 +60,9 @@ function Dashboard() {
   const[clearFile, setClearFile] = useState(false);
   const [caseMap, setCaseMap] = useState({});
 
+  const [catResponse, setCatResponse] = useState({});
+  const [case1Response, setCase1Response] = useState({});
+
   const [responseValPageNumber, setResponseValPageNumber] = useState(1);
   const [responseValCurrentPageNumber, setResponseValCurrentPageNumber] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -196,25 +199,36 @@ function Dashboard() {
       try {
         console.log("ppppppppp11")
 
+        fetch(`${BACKEND_URL}/categories`,
+          {
+          method:'GET'
+          }).then(response=>response.json())
+          .then(data=>{
+             console.log(data)
+             setCatResponse(data)
+             //API Success from LoginRadius Login API
+          })
+          .catch(error=>console.log(error));
+
   
-        const responsePromise = fetch(`${BACKEND_URL}/categories`, {
-          method: 'GET'
-        }).then(response => response.json())
-          .catch(error => console.log(error));
+        // const responsePromise = fetch(`${BACKEND_URL}/categories`, {
+        //   method: 'GET'
+        // }).then(response => c)
+        //   .catch(error => console.log(error));
         
-        responsePromise.then(response => {
-          const responseData = response; // Store the response in a constant
-          if(responseData.success){
-            const data =  responseData.data();
-            console.log(data, "data")
-            setItems(data.categories);
-          }
-          console.log(responseData); // Do whatever you want with the response data
-        });
+        // responsePromise.then(response => {
+        //   const responseData = response; // Store the response in a constant
+        //   if(responseData.success){
+        //     const data =  responseData.data();
+        //     console.log(data, "data")
+        //     setItems(data.categories);
+        //   }
+        //   console.log(responseData); // Do whatever you want with the response data
+        // });
 
 
      
-        console.log(items)
+        console.log(catResponse)
 
         const formData = new FormData();
         formData.append('email', email);
