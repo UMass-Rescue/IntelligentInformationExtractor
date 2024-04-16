@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import Table, { SelectColumnFilter, StatusPill, FileLink } from "./Table";
 import "../styles.css";
 
-const BACKEND_URL='http://127.0.0.1:5000'
-const endpoint= `${BACKEND_URL}/activity/allrecords/`;
+const BACKEND_URL = 'http://127.0.0.1:5000'
+const endpoint = `${BACKEND_URL}/activity/allrecords/`;
 const fetchDataFromAPI = async (formData) => {
   try {
     const response = await fetch(endpoint, {
@@ -29,9 +29,11 @@ export default function App() {
     setIsLoading(true);
     const formData = new FormData();
     formData.append("userId", "USER_ID"); // Replace with the actual user ID
-    formData.append("email", "USER_EMAIL"); // Replace with the actual user email
+    formData.append("email", "dummy@gmail.com"); // Replace with the actual user email
     const newData = await fetchDataFromAPI(formData);
     setData(newData);
+    console.log("data", data);
+    console.log("newData", newData);
     setIsLoading(false);
   };
 

@@ -81,6 +81,11 @@ function Dashboard() {
   const [caseItems, setCaseItems] = useState(['case 1', 'case 2', 'case 3']);
 
 
+  const addKeyValue = (key, value) => {
+    // console.log(key, value)
+    setJsonData(jsonData => ({ ...jsonData, [key]: value }));
+  };
+
 
   const handleFileChange = async (file) => {
     setClearFile(false)
@@ -195,7 +200,10 @@ function Dashboard() {
       const copiedData = [...json];
 
       // Set the copied data to state
-      setJsonData(copiedData);
+      // setJsonData(copiedData);
+      json.forEach(item => {
+        addKeyValue(item.category, item.output);
+      });
       console.log("jsondata:==============", jsonData)
 
 
