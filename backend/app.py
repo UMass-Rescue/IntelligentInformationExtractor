@@ -71,13 +71,13 @@ def add_new_case():
 def activity_uploadrecord():
     print("in activity_uploadrecord")
     email = request.form.get("email")
-    user_id = request.form.get("user_id") #TODO: checck this id
     case_id = request.form.get("case_id")
     record_title = request.form.get("record_title")
     record_description = request.form.get("record_description")
     file = request.files['file']
     categories = request.form.getlist("categories")
-    
+
+    user_id = str(database.get_user(email)["_id"])
     record_id = utils.generate_uuid()
     record_filepath = fileserver.save_file_to_fileserver(file, user_id, case_id, record_id)
     output = dummyML.process_file(file, categories)

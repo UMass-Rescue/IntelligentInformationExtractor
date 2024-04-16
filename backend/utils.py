@@ -21,7 +21,7 @@ def error_message(message):
         })
 
 def get_categories():
-    categories = ["category1", "category2", "category3"]
+    categories = ["Missing Child Information", "Contact Information", "Circumstances of Disappearance", "Witness Accounts", "Possible Abductor Information", "Medical Information", "Current Location or Sightings"]
     data = {
         "categories": categories
     }
