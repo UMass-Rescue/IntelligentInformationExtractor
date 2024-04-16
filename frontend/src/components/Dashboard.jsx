@@ -144,12 +144,6 @@ function Dashboard() {
       await new Promise(resolve => setTimeout(resolve, 5000));
       const endpoint= `${BACKEND_URL}/activity/uploadrecord/`;
 
-      // const response = await fetch(`${BACKEND_URL}/categories`, {
-      //   method: 'GET'
-      // });
-      // const data = await response.json();
-      // console.log(data);
-      // setCatResponse(data);
       
   
       const response1 = await fetch(endpoint, {
@@ -157,11 +151,6 @@ function Dashboard() {
         body: formData,
       });
       const response = await response1.json();
-
-      // const response = {
-      //   ok: true,
-      //   json: async () => sampleResponseData, // Simulate JSON parsing of response data
-      // };
       console.log(response)
 
       if (!response.success) {
@@ -172,6 +161,12 @@ function Dashboard() {
       setError(null);
       setIsError(false)
       setResponse(response);
+      console.log(responseVal)
+      console.log(responseVal.data)
+
+      console.log(responseVal.data['record_history'])
+      console.log(responseVal.data.record_history)
+      console.log(responseVal.data['record_history'])
       setResponseValPageNumber(1);
       setTypingIndex(0);
     } catch (error) {
