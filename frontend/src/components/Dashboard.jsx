@@ -168,12 +168,11 @@ function Dashboard() {
         throw new Error("Failed to submit data.");
       } 
       setResponseOk(true)
-      const data = await response.json();
       setLoading(false);
       setError(null);
       setIsError(false)
-      setResponse(data['data']);
-      setResponseValPageNumber(data['total_page']);
+      setResponse(response);
+      setResponseValPageNumber(1);
       setTypingIndex(0);
     } catch (error) {
       console.log(error)
