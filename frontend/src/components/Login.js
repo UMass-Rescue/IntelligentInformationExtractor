@@ -38,7 +38,7 @@ export default function Login(){
                 console.log(data)
                 //API Success from LoginRadius Login API
              })
-             .catch(error=>console.log(error))
+             .catch(error=>console.log(error));
          }
     
 

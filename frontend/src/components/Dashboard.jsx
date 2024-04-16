@@ -182,19 +182,38 @@ function Dashboard() {
   }
 
   useEffect(() => {
+
+
+
+    // const endpoint= `${BACKEND_URL}/auth/login`;
+ 
+
+
+
+
     // Fetch items and caseItems from the backend API when the component mounts
     const fetchInitialData = async () => {
       try {
         console.log("ppppppppp11")
 
-        const response = await fetch(`${BACKEND_URL}/categories`);
-        console.log(response)
-        if(response.success){
-          const data = await response.data();
-          console.log(data, "data")
-          setItems(data.categories);
-        }
+  
+        const responsePromise = fetch(`${BACKEND_URL}/categories`, {
+          method: 'GET'
+        }).then(response => response.json())
+          .catch(error => console.log(error));
+        
+        responsePromise.then(response => {
+          const responseData = response; // Store the response in a constant
+          if(responseData.success){
+            const data =  responseData.data();
+            console.log(data, "data")
+            setItems(data.categories);
+          }
+          console.log(responseData); // Do whatever you want with the response data
+        });
 
+
+     
         console.log(items)
 
         const formData = new FormData();
