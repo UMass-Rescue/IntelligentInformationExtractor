@@ -6,6 +6,7 @@ import FileUpload from "./FileUpload";
 
 
 const BACKEND_URL='http://127.0.0.1:5000'
+const email = 'dummy@gmail.com'
 
 function PageNumbers({ currentPage, totalPages, onPageClick }) {
   const [currentPageSet, setCurrentPageSet] = useState(1);
@@ -68,8 +69,10 @@ function Dashboard() {
   const [responseValOk, setResponseOk] = useState(false);
 
   const [typingIndex, setTypingIndex] = useState(-1);
+  const [items, setItems] = useState([]);
+  
 
-  const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
+  // const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
   const [caseItems, setCaseItems] = useState(['case 1', 'case 2', 'case 3']);
 
 
@@ -122,8 +125,8 @@ function Dashboard() {
         total_page: 10,
       };
       formData.append('file', file);
-      formData.append('email', "dummy_useremail@gmail.com");
-      formData.append('category', category);
+      formData.append('email', email);
+      formData.append('categories', category);
       formData.append('case_id', caseMap[caseValue]);
       formData.append('record_description', '')
       formData.append('record_title', '')
@@ -182,14 +185,20 @@ function Dashboard() {
     // Fetch items and caseItems from the backend API when the component mounts
     const fetchInitialData = async () => {
       try {
+        console.log("ppppppppp11")
+
         const response = await fetch(`${BACKEND_URL}/categories`);
+        console.log(response)
         if(response.success){
           const data = await response.data();
+          console.log(data, "data")
           setItems(data.categories);
         }
 
+        console.log(items)
+
         const formData = new FormData();
-        formData.append('email', 'dummyuser@gmail.com');
+        formData.append('email', email);
     
         const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`, {
           method: 'POST', // or 'GET' depending on your backend
