@@ -210,9 +210,10 @@ function Dashboard() {
           })
           .catch(error=>console.log(error));
 
+          console.log(catResponse)
 
           if(catResponse.success){
-                const data =  catResponse.data();
+                const data =  catResponse.data;
                 console.log(data, "data")
                 setItems(data.categories);
               }
