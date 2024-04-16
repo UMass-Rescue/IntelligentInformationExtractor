@@ -186,6 +186,8 @@ function Dashboard() {
 
   useEffect(() => {
 
+    
+
 
 
     // const endpoint= `${BACKEND_URL}/auth/login`;
@@ -197,6 +199,23 @@ function Dashboard() {
     // Fetch items and caseItems from the backend API when the component mounts
     const fetchInitialData = async () => {
       try {
+        const response = await fetch(`${BACKEND_URL}/categories`, {
+          method: 'GET'
+        });
+        const data = await response.json();
+        console.log(data);
+        setCatResponse(data);
+    
+        if (data.success) {
+          const categories = data.data.categories;
+          console.log(categories, "data");
+          setItems(categories);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      
+      try {
         console.log("ppppppppp11")
 
         await fetch(`${BACKEND_URL}/categories`,
@@ -206,17 +225,18 @@ function Dashboard() {
           .then(data=>{
              console.log(data)
              setCatResponse(data)
+             if (data.success) {
+              const categories = data.data.categories;
+              console.log(categories, "data");
+              setItems(categories);
+            }
              //API Success from LoginRadius Login API
           })
           .catch(error=>console.log(error));
 
-          console.log(catResponse)
+        
 
-          if(catResponse.success){
-                const data =  catResponse.data;
-                console.log(data, "data")
-                setItems(data.categories);
-              }
+
 
   
         // const responsePromise = fetch(`${BACKEND_URL}/categories`, {
