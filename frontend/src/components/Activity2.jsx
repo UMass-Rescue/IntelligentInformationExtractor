@@ -81,42 +81,42 @@ export default function App() {
     formData.append("userId", "USER_ID"); // Replace with the actual user ID
     formData.append("email", "dummy@gmail.com"); // Replace with the actual user email
     // const newData = await fetchDataFromAPI(formData);
-    // fetch(endpoint, {
-    //   method: "POST",
-    //   body: formData,
-    // })
-    // .then(response => {
-    //   return response.json(); // Parse JSON asynchronously
-    // })
-    // .then(data1 => {
-     
-    //   setData(data1.data);
-     
-    //   return data;
-      
-    // }).then(data => {
-    //    // Handle parsed data here
-    //    console.log(data, "data");
-    //    setIsLoading(false);
-
-    // }).catch(error => {
-    //     // Handle errors
-    //     console.error("Error:", error);
-    //   });
-
-    simulateFetch(getData(), 5000)
+    fetch(endpoint, {
+      method: "POST",
+      body: formData,
+    })
+    .then(response => {
+      return response.json(); // Parse JSON asynchronously
+    })
     .then(data1 => {
-      console.log(data1);
-      setData(data1);
+     
+      setData(data1.data);
+     
+      return data;
+      
+    }).then(data => {
+       // Handle parsed data here
+       console.log(data, "data");
+       setIsLoading(false);
+
+    }).catch(error => {
+        // Handle errors
+        console.error("Error:", error);
+      });
+
+    // simulateFetch(getData(), 5000)
+    // .then(data1 => {
+    //   console.log(data1);
+    //   setData(data1);
      
       
-    console.log("data", data);
-    setIsLoading(false);
+    // console.log("data", data);
+    // setIsLoading(false);
       
-    }).catch(error => {
-      // Handle errors
-      console.error("Error:", error);
-    });
+    // }).catch(error => {
+    //   // Handle errors
+    //   console.error("Error:", error);
+    // });
     
   };
 
