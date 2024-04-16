@@ -87,8 +87,7 @@ function Dashboard() {
   const [responseValOk, setResponseOk] = useState(false);
 
   const [typingIndex, setTypingIndex] = useState(-1);
-  // const [items, setItems] = useState([]);
-  const [jsonData, setJsonData] = useState([]);
+
 
   const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
   const [caseItems, setCaseItems] = useState(['case 1', 'case 2', 'case 3']);
@@ -203,22 +202,24 @@ function Dashboard() {
         body: formData,
       })
       .then(response => {
-        if (!response.success) {
-          throw new Error("Network response was not ok");
-        }
         return response.json(); // Parse JSON asynchronously
       })
       .then(data1 => {
         const record_history = data1.data.record_history;
+        console.log(record_history, "record_history");
         setResponseVal(record_history);
-        // Handle parsed data here
-        setLoading(false);
-      setError(null);
-      setIsError(false);
-      setResponseValPageNumber(1);
-      setTypingIndex(0);
-      setResponseOk(true)
+        return responseVal;
         
+      }).then(responseVal => {
+         // Handle parsed data here
+         console.log(responseVal, "responseval");
+         setLoading(false);
+         setError(null);
+         setIsError(false);
+         setResponseValPageNumber(1);
+         setTypingIndex(0);
+         setResponseOk(true)
+
       })
     
 
