@@ -73,15 +73,29 @@ function Dashboard() {
 
   const [typingIndex, setTypingIndex] = useState(-1);
   const [items, setItems] = useState([]);
-
+  const [jsonData, setJsonData] = useState([]);
 
   // const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
   const [caseItems, setCaseItems] = useState(['case 1', 'case 2', 'case 3']);
 
 
+  async function processRecordHistory(jsonData) {
+    console.log("jsonData", jsonData)
+    for (const item of jsonData) {
+      await addKeyValue2(item.category, item.output);
+    }
+  }
+
+
   const addKeyValue = (key, value) => {
-    // console.log(key, value)
-    setResponseVal(jsonData => ({ ...responseVal, [key]: value }));
+    // console.log("key", key)
+    // console.log("value", value)
+    setResponseVal(responseVal => ({ ...responseVal, [key]: value }));
+  };
+
+  const addKeyValue2 = (key, value) => {
+    console.log(key, value)
+    setJsonData(jsonData => ({ ...jsonData, [key]: value }));
   };
 
 
@@ -167,41 +181,48 @@ function Dashboard() {
       setIsError(false)
       console.log(response)
       const record_history = response.data.record_history
-
-      record_history.forEach(item => {
-        addKeyValue(item.category, item.output);
-      });
-      console.log("responseval:", responseVal)
+      console.log("record_history", record_history)
+      // record_history.forEach(item => {
+      //   addKeyValue(item.category, item.output);
+      // });
+      // console.log("responseval:=================", responseVal)
 
       // const x = response.data
       // const record_history = response.data.record_history
       // console.log("record_history", record_history)
       // console.log(x)
       // console.log(x.record_history)
-      
+
       // console.log(response)
       // console.log("responseval:", responseVal)
       // console.log(responseVal.data)
 
-      // const json = [
-      //   {
-      //     "category": "<category 1 name>",
-      //     "output": {
-      //       "prompt1": "ml output 1",
-      //       "prompt2": "ml output 2"
-      //     }
-      //   },
-      //   {
-      //     "category": "<category 2 name>",
-      //     "output": {
-      //       "prompt1": "ml output 1",
-      //       "prompt2": "ml output 2"
-      //     }
-      //   }
-      //   // Add more data as needed
-      // ];
+      const json = [
+        {
+          "category": "<category 1 name>",
+          "output": {
+            "prompt1": "ml output 10",
+            "prompt2": "ml output 2"
+          }
+        },
+        {
+          "category": "<category 2 name>",
+          "output": {
+            "prompt1": "ml output 1",
+            "prompt2": "ml output 2"
+          }
+        }
+      ];
 
-  
+      // json.forEach(item => {
+      //   addKeyValue2(item.category, item.output);
+      // });
+      await processRecordHistory(json);
+      await new Promise(resolve => setTimeout(resolve, 10000));
+      console.log("jsondata:==============", jsonData)
+
+
+
 
 
 
@@ -211,7 +232,7 @@ function Dashboard() {
       // console.log(responseVal.data['record_history'])
       setResponseValPageNumber(1);
       setTypingIndex(0);
-      setResponseOk(true)
+      // setResponseOk(true)
     } catch (error) {
       console.log(error)
       setLoading(false);
