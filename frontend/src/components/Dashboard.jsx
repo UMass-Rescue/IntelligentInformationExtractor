@@ -66,7 +66,22 @@ function Dashboard() {
   const [responseValCurrentPageNumber, setResponseValCurrentPageNumber] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [responseVal, setResponseVal] = useState([]);
+  const [responseVal, setResponseVal] = useState([
+    {
+      "category": "<category 1 name>",
+      "output": {
+        "prompt1": "mlml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10ml output 10 output 10",
+        "prompt2": "ml output 2"
+      }
+    },
+    {
+      "category": "<category 2 name>",
+      "output": {
+        "prompt1": "ml output 1",
+        "prompt2": "ml output 2"
+      }
+    }
+  ]);
 
 
   const [responseValOk, setResponseOk] = useState(false);
@@ -78,26 +93,14 @@ function Dashboard() {
   const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
   const [caseItems, setCaseItems] = useState(['case 1', 'case 2', 'case 3']);
 
-
-  // async function processRecordHistory(jsonData) {
-  //   console.log("jsonData", jsonData)
-  //   for (const item of jsonData) {
-  //     await addKeyValue2(item.category, item.output);
-  //   }
-  // }
-
-
-  // const addKeyValue = (key, value) => {
-  //   // console.log("key", key)
-  //   // console.log("value", value)
-  //   setResponseVal(responseVal => ({ ...responseVal, [key]: value }));
-  // };
-
-  // const addKeyValue2 = (key, value) => {
-  //   console.log(key, value)
-  //   setJsonData(jsonData => ({ ...jsonData, [key]: value }));
-  // };
-
+  function simulateFetch(data, delay = 0) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(data);
+      }, delay);
+    });
+  }
+  
 
   const handleFileChange = async (file) => {
     setClearFile(false)
@@ -142,11 +145,28 @@ function Dashboard() {
 
     try {
       const formData = new FormData();
-      const sampleResponseData = {
-        success:true,
-        output: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        total_page: 10,
-      };
+      // const json = [
+      //   {
+      //     "category": "<category 1 name>",
+      //     "output": {
+      //       "prompt1": "ml output 10",
+      //       "prompt2": "ml output 2"
+      //     }
+      //   },
+      //   {
+      //     "category": "<category 2 name>",
+      //     "output": {
+      //       "prompt1": "ml output 1",
+      //       "prompt2": "ml output 2"
+      //     }
+      //   }
+      // ];
+
+      // const sampleResponseData = {
+      //   success:true,
+      //   output: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      //   total_page: 10,
+      // };
       formData.append('file', file);
       formData.append('email', email);
       formData.append('categories', category);
@@ -154,42 +174,80 @@ function Dashboard() {
       formData.append('record_description', '')
       formData.append('record_title', '')
       formData.append('current_page', responseValCurrentPageNumber);
-      console.log(formData)
 
-      for (const entry of formData.entries()) {
-        console.log(entry);
-      }
+    
 
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 5000));
       const endpoint = `${BACKEND_URL}/activity/uploadrecord/`;
 
+      // simulateFetch(json, 5000)
+      // .then(data => {
+      //   console.log(data);
+      //   const record_history = data
+      //   setResponseVal(record_history)
+      //   // Handle parsed data here
+      //   setLoading(false);
+      // setError(null);
+      // setIsError(false);
+      // setResponseValPageNumber(1);
+      // setTypingIndex(0);
+      // setResponseOk(true)
+        
+      // }).catch(error => {
+      //   // Handle errors
+      //   console.error("Error:", error);
+      // });
 
-
-      const response1 = await fetch(endpoint, {
+      fetch(endpoint, {
         method: "POST",
         body: formData,
-      });
+      })
+      .then(response => {
+        if (!response.success) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json(); // Parse JSON asynchronously
+      })
+      .then(data1 => {
+        const record_history = data1.data.record_history;
+        setResponseVal(record_history);
+        // Handle parsed data here
+        setLoading(false);
+      setError(null);
+      setIsError(false);
+      setResponseValPageNumber(1);
+      setTypingIndex(0);
+      setResponseOk(true)
+        
+      })
+    
 
-      const response = response1.json();
+      // const endpoint = `${BACKEND_URL}/activity/uploadrecord/`;
+
+
+
+      // const response1 = await fetch(endpoint, {
+      //   method: "POST",
+      //   body: formData,
+      // });
+
+      // const response = response1.json();
       // console.log(response)
       // const response = sampleResponseData
       
 
-      if (!response.success) {
-        throw new Error("Failed to submit data.");
-      }
+      // if (!response.success) {
+      //   throw new Error("Failed to submit data.");
+      // }
 
-      setLoading(false);
-      setError(null);
-      setIsError(false)
-      const record_history = response.data.record_history
-      setResponseVal(record_history)
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      // console.log("record_history", record_history)
-      // record_history.forEach(item => {
-      //   addKeyValue(item.category, item.output);
-      // });
+      
+      // const record_history = response.data.record_history
+      // setResponseVal(record_history)
+      // await new Promise(resolve => setTimeout(resolve, 3000));
+      // // console.log("record_history", record_history)
+      // // record_history.forEach(item => {
+      // //   addKeyValue(item.category, item.output);
+      // // });
       // console.log("responseval:=================", responseVal)
 
       // const x = response.data
@@ -219,13 +277,14 @@ function Dashboard() {
       //   }
       // ];
 
-      // // json.forEach(item => {
-      // //   addKeyValue2(item.category, item.output);
-      // // });
-      // // await processRecordHistory(json);
+      // // // json.forEach(item => {
+      // // //   addKeyValue2(item.category, item.output);
+      // // // });
+      // // // await processRecordHistory(json);
+      // console.log("lll")
      
       // setJsonData(json)
-      // await new Promise(resolve => setTimeout(resolve, 1000));
+      // // await new Promise(resolve => setTimeout(resolve, 20000));
       // console.log("jsondata:==============", jsonData)
 
 
@@ -237,9 +296,7 @@ function Dashboard() {
       // console.log(responseVal.data['record_history'])
       // console.log(responseVal.data.record_history)
       // console.log(responseVal.data['record_history'])
-      setResponseValPageNumber(1);
-      setTypingIndex(0);
-      // setResponseOk(true)
+     
     } catch (error) {
       console.log(error)
       setLoading(false);
@@ -325,29 +382,6 @@ function Dashboard() {
       } catch (error) {
         console.error("Error fetching initial categories data:", error);
       }
-
-
-      // try {
-
-
-
-
-      //   // const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`);
-      //   if(caseResponse.success){
-      //     const data = await caseResponse.data();
-      //     const newCaseMap = {};
-      //       data.forEach(({ case_id, case_title }) => {
-      //         newCaseMap[case_title] = case_id;
-      //       });
-      //     setCaseMap(newCaseMap);
-      //     const caseTitles = data.map(caseData => caseData.case_title);
-      //     setCaseItems(caseTitles);
-      //   }
-
-      // } catch (error) {
-      //   console.error("Error fetching initial data:", error);
-
-      // }
     };
 
     fetchInitialData();
@@ -402,17 +436,21 @@ function Dashboard() {
               <PageNumbers currentPage={responseValCurrentPageNumber} totalPages={responseValPageNumber} onPageClick={pageClick} />
             </div>
             <div>
-              {/* Iterate through record_history and display category and dynamic keys with values */}
-              {responseVal.data.record_history.map((record, index) => (
-                <div key={index}>
-                  <h5>Category: {record.category}</h5>
-                  {/* Iterate through the keys of output */}
-                  {Object.keys(record.output).map((key, index) => (
-                    <p key={index}>{key}: {record.output[key]}</p>
-                  ))}
-                </div>
-              ))}
-            </div>
+  {responseVal.map((record, index) => (
+    <div key={index} className="border rounded-md p-4 mb-4">
+      <h5 className="font-bold mb-2">Category: {record.category}</h5>
+      <div className="ml-4">
+        {Object.entries(record.output).map(([key, value], index) => (
+          <p key={index} className="mb-1">
+            <span className="font-semibold">{key}:</span> {value}
+          </p>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
+
+           
           </div>
         </div>
       ) : null}
