@@ -198,6 +198,40 @@ function Dashboard() {
 
     // Fetch items and caseItems from the backend API when the component mounts
     const fetchInitialData = async () => {
+
+      try {
+
+        const formData = new FormData();
+        formData.append('email', email);
+
+        const response = await fetch(`${BACKEND_URL}/caseDetails`, {
+          method: 'POST',
+          body: formData
+        });
+        const data1 = await response.json();
+    
+        if (data1.success) {
+          console.log(data1, "data1")
+            const data =  data1.data;
+            const newCaseMap = {};
+              data.forEach(({ case_id, case_title }) => {
+                newCaseMap[case_title] = case_id;
+              });
+              console.log(newCaseMap, "map 111")
+            setCaseMap(newCaseMap);
+            console.log(caseMap)
+            const caseTitles = data.map(caseData => caseData.case_title);
+            setCaseItems(caseTitles);
+            console.log(caseItems)
+          
+
+
+        }
+      } catch (error) {
+        console.error("Error fetching initial case data:", error);
+      }
+
+
       try {
         const response = await fetch(`${BACKEND_URL}/categories`, {
           method: 'GET'
@@ -212,78 +246,31 @@ function Dashboard() {
           setItems(categories);
         }
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching initial categories data:", error);
       }
-      
-      try {
-        console.log("ppppppppp11")
 
-        await fetch(`${BACKEND_URL}/categories`,
-          {
-          method:'GET'
-          }).then(response=>response.json())
-          .then(data=>{
-             console.log(data)
-             setCatResponse(data)
-             if (data.success) {
-              const categories = data.data.categories;
-              console.log(categories, "data");
-              setItems(categories);
-            }
-             //API Success from LoginRadius Login API
-          })
-          .catch(error=>console.log(error));
 
+      // try {
+        
+   
         
 
-
-
-  
-        // const responsePromise = fetch(`${BACKEND_URL}/categories`, {
-        //   method: 'GET'
-        // }).then(response => c)
-        //   .catch(error => console.log(error));
+      //   // const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`);
+      //   if(caseResponse.success){
+      //     const data = await caseResponse.data();
+      //     const newCaseMap = {};
+      //       data.forEach(({ case_id, case_title }) => {
+      //         newCaseMap[case_title] = case_id;
+      //       });
+      //     setCaseMap(newCaseMap);
+      //     const caseTitles = data.map(caseData => caseData.case_title);
+      //     setCaseItems(caseTitles);
+      //   }
         
-        // responsePromise.then(response => {
-        //   const responseData = response; // Store the response in a constant
-        //   if(responseData.success){
-        //     const data =  responseData.data();
-        //     console.log(data, "data")
-        //     setItems(data.categories);
-        //   }
-        //   console.log(responseData); // Do whatever you want with the response data
-        // });
-
-
-     
-        console.log(items)
-
-        const formData = new FormData();
-        formData.append('email', email);
-    
-        const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`, {
-          method: 'POST', // or 'GET' depending on your backend
-          body: formData
-        });
-
+      // } catch (error) {
+      //   console.error("Error fetching initial data:", error);
         
-
-        // const caseResponse = await fetch(`${BACKEND_URL}/caseDetails`);
-        if(caseResponse.success){
-          const data = await caseResponse.data();
-          const newCaseMap = {};
-            data.forEach(({ case_id, case_title }) => {
-              newCaseMap[case_title] = case_id;
-            });
-          setCaseMap(newCaseMap);
-          const caseTitles = data.map(caseData => caseData.case_title);
-          setCaseItems(caseTitles);
-        }
-        
-      } catch (error) {
-        console.error("Error fetching initial data:", error);
-        
-      }
+      // }
     };
 
     fetchInitialData();
