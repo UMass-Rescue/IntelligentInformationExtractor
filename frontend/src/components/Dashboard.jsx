@@ -153,6 +153,7 @@ function Dashboard() {
       //   ok: true,
       //   json: async () => sampleResponseData, // Simulate JSON parsing of response data
       // };
+      console.log(response)
 
       if (!response.success) {
         throw new Error("Failed to submit data.");
@@ -166,6 +167,7 @@ function Dashboard() {
       setResponseValPageNumber(data['total_page']);
       setTypingIndex(0);
     } catch (error) {
+      console.log(error)
       setLoading(false);
       setTypingIndex(-1);
       setResponse('');
