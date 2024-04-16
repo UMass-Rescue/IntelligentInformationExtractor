@@ -210,6 +210,13 @@ function Dashboard() {
           })
           .catch(error=>console.log(error));
 
+
+          if(catResponse.success){
+                const data =  catResponse.data();
+                console.log(data, "data")
+                setItems(data.categories);
+              }
+
   
         // const responsePromise = fetch(`${BACKEND_URL}/categories`, {
         //   method: 'GET'
@@ -228,7 +235,7 @@ function Dashboard() {
 
 
      
-        console.log(catResponse)
+        console.log(items)
 
         const formData = new FormData();
         formData.append('email', email);
