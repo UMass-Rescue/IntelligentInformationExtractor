@@ -72,31 +72,31 @@ function Dashboard() {
   const [responseValOk, setResponseOk] = useState(false);
 
   const [typingIndex, setTypingIndex] = useState(-1);
-  const [items, setItems] = useState([]);
+  // const [items, setItems] = useState([]);
   const [jsonData, setJsonData] = useState([]);
 
-  // const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
+  const [items, setItems] = useState(['Missing Child Information', 'Contact Information', 'Current Location or Sightings', 'Possible Abductor Information']);
   const [caseItems, setCaseItems] = useState(['case 1', 'case 2', 'case 3']);
 
 
-  async function processRecordHistory(jsonData) {
-    console.log("jsonData", jsonData)
-    for (const item of jsonData) {
-      await addKeyValue2(item.category, item.output);
-    }
-  }
+  // async function processRecordHistory(jsonData) {
+  //   console.log("jsonData", jsonData)
+  //   for (const item of jsonData) {
+  //     await addKeyValue2(item.category, item.output);
+  //   }
+  // }
 
 
-  const addKeyValue = (key, value) => {
-    // console.log("key", key)
-    // console.log("value", value)
-    setResponseVal(responseVal => ({ ...responseVal, [key]: value }));
-  };
+  // const addKeyValue = (key, value) => {
+  //   // console.log("key", key)
+  //   // console.log("value", value)
+  //   setResponseVal(responseVal => ({ ...responseVal, [key]: value }));
+  // };
 
-  const addKeyValue2 = (key, value) => {
-    console.log(key, value)
-    setJsonData(jsonData => ({ ...jsonData, [key]: value }));
-  };
+  // const addKeyValue2 = (key, value) => {
+  //   console.log(key, value)
+  //   setJsonData(jsonData => ({ ...jsonData, [key]: value }));
+  // };
 
 
   const handleFileChange = async (file) => {
@@ -143,6 +143,7 @@ function Dashboard() {
     try {
       const formData = new FormData();
       const sampleResponseData = {
+        success:true,
         output: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         total_page: 10,
       };
@@ -169,8 +170,11 @@ function Dashboard() {
         method: "POST",
         body: formData,
       });
-      const response = await response1.json();
-      console.log(response)
+
+      const response = response1.json();
+      // console.log(response)
+      // const response = sampleResponseData
+      
 
       if (!response.success) {
         throw new Error("Failed to submit data.");
@@ -179,9 +183,10 @@ function Dashboard() {
       setLoading(false);
       setError(null);
       setIsError(false)
-      console.log(response)
       const record_history = response.data.record_history
-      console.log("record_history", record_history)
+      setResponseVal(record_history)
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      // console.log("record_history", record_history)
       // record_history.forEach(item => {
       //   addKeyValue(item.category, item.output);
       // });
@@ -197,29 +202,31 @@ function Dashboard() {
       // console.log("responseval:", responseVal)
       // console.log(responseVal.data)
 
-      const json = [
-        {
-          "category": "<category 1 name>",
-          "output": {
-            "prompt1": "ml output 10",
-            "prompt2": "ml output 2"
-          }
-        },
-        {
-          "category": "<category 2 name>",
-          "output": {
-            "prompt1": "ml output 1",
-            "prompt2": "ml output 2"
-          }
-        }
-      ];
+      // const json = [
+      //   {
+      //     "category": "<category 1 name>",
+      //     "output": {
+      //       "prompt1": "ml output 10",
+      //       "prompt2": "ml output 2"
+      //     }
+      //   },
+      //   {
+      //     "category": "<category 2 name>",
+      //     "output": {
+      //       "prompt1": "ml output 1",
+      //       "prompt2": "ml output 2"
+      //     }
+      //   }
+      // ];
 
-      // json.forEach(item => {
-      //   addKeyValue2(item.category, item.output);
-      // });
-      await processRecordHistory(json);
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      console.log("jsondata:==============", jsonData)
+      // // json.forEach(item => {
+      // //   addKeyValue2(item.category, item.output);
+      // // });
+      // // await processRecordHistory(json);
+     
+      // setJsonData(json)
+      // await new Promise(resolve => setTimeout(resolve, 1000));
+      // console.log("jsondata:==============", jsonData)
 
 
 
