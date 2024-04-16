@@ -4,37 +4,120 @@ import "../styles.css";
 
 const BACKEND_URL = 'http://127.0.0.1:5000'
 const endpoint = `${BACKEND_URL}/activity/allrecords/`;
-const fetchDataFromAPI = async (formData) => {
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      body: formData,
-    });
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
+
+function simulateFetch(data, delay = 0) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(data);
+    }, delay);
+  });
+}
+
+
+const getData = () => [
+      {
+          "case_id": "9",
+          "case_title": "title",
+          "record_id": "jhgjdgh",
+          "record_title": "uu",
+          "record_date": "ii",
+          "user_id": "oo",
+      },
+      {
+        "case_id": "9",
+        "case_title": "title",
+        "record_id": "jhgjdgh",
+        "record_title": "uu",
+        "record_date": "ii",
+        "user_id": "oo",
     }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return [];
-  }
+  ];
+
+const fetchDataFromAPI =  (formData) => {
+
+      // simulateFetch(getData(), 5000)
+      // .then(data => {
+      //   console.log(data);
+      //   const record_history = data
+      //   setResponseVal(record_history)
+      //   // Handle parsed data here
+      //   setLoading(false);
+      // setError(null);
+      // setIsError(false);
+      // setResponseValPageNumber(1);
+      // setTypingIndex(0);
+      // setResponseOk(true)
+        
+      // }).catch(error => {
+      //   // Handle errors
+      //   console.error("Error:", error);
+      // });
+
+
+
+  // try {
+  //   const response = await fetch(endpoint, {
+  //     method: "POST",
+  //     body: formData,
+  //   });
+  //   if (!response.ok) {
+  //     throw new Error("Failed to fetch data");
+  //   }
+  //   const data = await response.json();
+  //   return data;
+  // } catch (error) {
+  //   console.error("Error fetching data:", error);
+  //   return [];
+  // }
 };
 
 export default function App() {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData =  () => {
     setIsLoading(true);
     const formData = new FormData();
     formData.append("userId", "USER_ID"); // Replace with the actual user ID
     formData.append("email", "dummy@gmail.com"); // Replace with the actual user email
-    const newData = await fetchDataFromAPI(formData);
-    setData(newData);
-    console.log("data", data);
-    console.log("newData", newData);
-    setIsLoading(false);
+    // const newData = await fetchDataFromAPI(formData);
+    fetch(endpoint, {
+      method: "POST",
+      body: formData,
+    })
+    .then(response => {
+      return response.json(); // Parse JSON asynchronously
+    })
+    .then(data1 => {
+     
+      setData(data1.data);
+     
+      return data;
+      
+    }).then(data => {
+       // Handle parsed data here
+       console.log(data, "data");
+       setIsLoading(false);
+
+    }).catch(error => {
+        // Handle errors
+        console.error("Error:", error);
+      });
+
+    // simulateFetch(getData(), 5000)
+    // .then(data1 => {
+    //   console.log(data1);
+    //   setData(data1);
+     
+      
+    // console.log("data", data);
+    // setIsLoading(false);
+      
+    // }).catch(error => {
+    //   // Handle errors
+    //   console.error("Error:", error);
+    // });
+    
   };
 
   const columns = React.useMemo(
