@@ -61,14 +61,12 @@ function Dashboard() {
   const [caseMap, setCaseMap] = useState({});
 
   const [catResponse, setCatResponse] = useState({});
-  const [case1Response, setCase1Response] = useState({});
 
   const [responseValPageNumber, setResponseValPageNumber] = useState(1);
   const [responseValCurrentPageNumber, setResponseValCurrentPageNumber] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [responseVal, setResponseVal] = useState([]);
-  const [jsonData, setJsonData] = useState([]);
 
 
   const [responseValOk, setResponseOk] = useState(false);
@@ -83,7 +81,7 @@ function Dashboard() {
 
   const addKeyValue = (key, value) => {
     // console.log(key, value)
-    setJsonData(jsonData => ({ ...jsonData, [key]: value }));
+    setResponseVal(jsonData => ({ ...responseVal, [key]: value }));
   };
 
 
@@ -168,50 +166,49 @@ function Dashboard() {
       setError(null);
       setIsError(false)
       console.log(response)
-      const x = response.data
       const record_history = response.data.record_history
-      console.log("record_history", record_history)
-      console.log(x)
-      console.log(x.record_history)
-      setResponseVal(record_history);
-      console.log(response)
-      console.log("responseval:", responseVal)
-      console.log(responseVal.data)
 
-      const json = [
-        {
-          "category": "<category 1 name>",
-          "output": {
-            "prompt1": "ml output 1",
-            "prompt2": "ml output 2"
-          }
-        },
-        {
-          "category": "<category 2 name>",
-          "output": {
-            "prompt1": "ml output 1",
-            "prompt2": "ml output 2"
-          }
-        }
-        // Add more data as needed
-      ];
-
-      // Make a copy of the parsed data
-      const copiedData = [...json];
-
-      // Set the copied data to state
-      // setJsonData(copiedData);
-      json.forEach(item => {
+      record_history.forEach(item => {
         addKeyValue(item.category, item.output);
       });
-      console.log("jsondata:==============", jsonData)
+      console.log("responseval:", responseVal)
+
+      // const x = response.data
+      // const record_history = response.data.record_history
+      // console.log("record_history", record_history)
+      // console.log(x)
+      // console.log(x.record_history)
+      
+      // console.log(response)
+      // console.log("responseval:", responseVal)
+      // console.log(responseVal.data)
+
+      // const json = [
+      //   {
+      //     "category": "<category 1 name>",
+      //     "output": {
+      //       "prompt1": "ml output 1",
+      //       "prompt2": "ml output 2"
+      //     }
+      //   },
+      //   {
+      //     "category": "<category 2 name>",
+      //     "output": {
+      //       "prompt1": "ml output 1",
+      //       "prompt2": "ml output 2"
+      //     }
+      //   }
+      //   // Add more data as needed
+      // ];
+
+  
 
 
 
 
-      console.log(responseVal.data['record_history'])
-      console.log(responseVal.data.record_history)
-      console.log(responseVal.data['record_history'])
+      // console.log(responseVal.data['record_history'])
+      // console.log(responseVal.data.record_history)
+      // console.log(responseVal.data['record_history'])
       setResponseValPageNumber(1);
       setTypingIndex(0);
       setResponseOk(true)
