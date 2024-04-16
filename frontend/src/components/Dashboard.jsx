@@ -143,11 +143,20 @@ function Dashboard() {
       setLoading(true);
       await new Promise(resolve => setTimeout(resolve, 5000));
       const endpoint= `${BACKEND_URL}/activity/uploadrecord/`;
+
+      // const response = await fetch(`${BACKEND_URL}/categories`, {
+      //   method: 'GET'
+      // });
+      // const data = await response.json();
+      // console.log(data);
+      // setCatResponse(data);
+      
   
-      const response = await fetch(endpoint, {
+      const response1 = await fetch(endpoint, {
         method: "POST",
         body: formData,
       });
+      const response = await response1.json();
 
       // const response = {
       //   ok: true,
