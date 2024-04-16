@@ -199,7 +199,7 @@ function Dashboard() {
       try {
         console.log("ppppppppp11")
 
-        fetch(`${BACKEND_URL}/categories`,
+        await fetch(`${BACKEND_URL}/categories`,
           {
           method:'GET'
           }).then(response=>response.json())
