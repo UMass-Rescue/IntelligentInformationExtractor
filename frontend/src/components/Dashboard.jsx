@@ -67,7 +67,7 @@ function Dashboard() {
   const [responseValCurrentPageNumber, setResponseValCurrentPageNumber] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [responseVal, setResponse] = useState({});
+  const [responseVal, setResponseVal] = useState({});
 
   const [responseValOk, setResponseOk] = useState(false);
 
@@ -156,11 +156,11 @@ function Dashboard() {
       if (!response.success) {
         throw new Error("Failed to submit data.");
       } 
-      setResponseOk(true)
+     
       setLoading(false);
       setError(null);
       setIsError(false)
-      setResponse(response);
+      setResponseVal(response);
       console.log(responseVal)
       console.log(responseVal.data)
 
@@ -169,11 +169,12 @@ function Dashboard() {
       console.log(responseVal.data['record_history'])
       setResponseValPageNumber(1);
       setTypingIndex(0);
+      setResponseOk(true)
     } catch (error) {
       console.log(error)
       setLoading(false);
       setTypingIndex(-1);
-      setResponse('');
+      setResponseVal({});
       console.error("Error submitting data:", error);
       setError("Failed to submit data.");
       setIsError(true)
