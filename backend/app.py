@@ -94,7 +94,7 @@ def activity_uploadrecord():
     return utils.success_message(data), 200
 
 @app.route('/profile/', methods=["POST"])
-def add_new_case():
+def profile():
     email = request.form.get("email")
     firstname, lastname = database.getName(email)
     case_count = database.getCaseCount(email)
