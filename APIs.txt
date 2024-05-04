@@ -212,3 +212,21 @@ response:
         ...
     ]
 }
+
+'/profile/':
+request:
+{
+    "email": <email>,
+}
+response:
+{
+    "success": "true",
+    "data":{
+        "email": <user email>,
+        "password" : "*********",
+        "firstname": <firstname>,
+        "lastname": <lastname>,
+        "case_count": <number of cases>,
+        "record_count": <number of records>
+    }
+}

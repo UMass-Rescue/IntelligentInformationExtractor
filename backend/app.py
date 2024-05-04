@@ -93,6 +93,23 @@ def activity_uploadrecord():
     print(f"uploadrecord: data: {data}")
     return utils.success_message(data), 200
 
+@app.route('/profile/', methods=["POST"])
+def add_new_case():
+    email = request.form.get("email")
+    firstname, lastname = database.getName(email)
+    case_count = database.getCaseCount(email)
+    record_count = database.getRecordCount(email)
+    data = {
+        "firstname": firstname,
+        "lastname": lastname,
+        "case_count": case_count,
+        "record_count": record_count,
+        "email": email,
+        "password": "********"
+    }
+    return utils.success_message(data), 200
+    
+
 
 if __name__ == "__main__":
     app.run(debug=True)

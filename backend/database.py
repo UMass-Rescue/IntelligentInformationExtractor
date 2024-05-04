@@ -111,10 +111,11 @@ class CaseModel:
         )
 
 class UserModel:
-    def __init__(self, username, email, password, fullname="", dateJoined="", teamName="No team name", cases=[]) -> None:
+    def __init__(self, username, email, password, firstname="", lastname="", dateJoined="", teamName="No team name", cases=[]) -> None:
         self._id = 0
         self.username = username
-        self.fullname = fullname
+        self.firstname = firstname
+        self.lastname = lastname
         self.email = email
         self.password = password
         self.dateJoined = dateJoined
@@ -122,13 +123,14 @@ class UserModel:
         self.cases = cases          #list of CaseModel objects
 
     def __str__(self) -> str:
-        return f"UserModel: _id: {self._id}, username: {self.username}, fullname: {self.fullname}, email: {self.email}, password: {self.password}, dateJoined: {self.date}, teamName: {self.teamName}, cases: {self.cases}"
+        return f"UserModel: _id: {self._id}, username: {self.username}, firstname: {self.firstname}, lastname: {self.lastname}, email: {self.email}, password: {self.password}, dateJoined: {self.date}, teamName: {self.teamName}, cases: {self.cases}"
     
     def to_dict(self) -> dict:
         return {
             "_id": self._id,
             "username": self.username,
-            "fullname": self.fullname,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
             "email": self.email,
             "password": self.password,
             "dateJoined": self.dateJoined,
@@ -141,7 +143,8 @@ class UserModel:
         return cls(
             _id = user_dict.get("_id",0),
             username = user_dict.get("username", ""),
-            fullname = user_dict.get("fullname", ""),
+            firstname = user_dict.get("firstname", ""),
+            lastname = user_dict.get("lastname", ""),
             email = user_dict.get("email", ""),
             password = user_dict.get("password", ""),
             dateJoined = user_dict.get("dateJoined", ""),
@@ -207,7 +210,8 @@ def update_user(userid, user):
     result = db.users.update_one(
         {"_id": userid},
         {"$set": {"username": user["username"],
-                "fullname": user["fullname"],
+                "firstname": user["firstname"],
+                "lastname": user["lastname"],
                 "email": user["email"],
                 "password": user["password"],
                 "teamName": user["teamName"]}},
@@ -325,6 +329,21 @@ def getAllCases(email):
         return error_message("User not found"), 401
 
 
+def getName(email):
+    user = db.users.find_one({"email": email})
+    if user:
+        return user["firstname"], user["lastname"]
+    else:
+        print("User not found")
+
+def getCaseCount(email):
+    print("getCaseCount")
+    user = db.users.find_one({"email": email})
+    if user:
+        return len(user["cases"])
+    else:
+        return 0
+
 
 def getallactivity(email):
     user = db.users.find_one({"email": email})
@@ -344,12 +363,23 @@ def getallactivity(email):
                     "record_title": record_title,
                     "record_date": record_date,
                     "user_id": str(user["_id"]),
+                    "url": record["fileLocation"]
                 })
         print(f"allrecords: data: {data}")
         return success_message(data), 200
     else:
         print("User not found")
         return error_message("User not found"), 401
+    
+def getRecordCount(email):
+    user = db.users.find_one({"email": email})
+    rcount = 0
+    if user:
+        for case in user["cases"]:
+            rcount += len(case["records"])
+        return rcount
+    else:
+        return 0
 
 
 def getrecord(email, case_id, record_id):
@@ -390,26 +420,3 @@ def add_dummy_cases(email):
        case = CaseModel(id=utils.generate_uuid(), title=f"case {i}", description=f"case description {i}",dateCreated=utils.get_date()).to_dict()
        add_case(email, case)
 
-
-#=======================================================
-# Testing database queries 
-# user = UserModel(
-#     id = 1,
-#     username = "vineeth",
-#     fullname = "saivineethkumardara",
-#     email = "sdara@umass.edu",
-#     password = "password",
-#     dateJoined = datetime.now(),
-#     teamName = "Admin",
-#     cases = [])
-# case = CaseModel(
-#     id = "1",
-#     title = "Case 1",
-#     description = "This is case 1",
-#     records = []
-# )
-# db.users.insert_one(user.to_dict())
-# add_case(1, case = case.to_dict())
-# add_record(1, "1", {"id": "1", "title": "Record 1", "description": "This is record 1"})
-# print(get_case(1, "1"))
-# print(get_record(1, "1", "1"))

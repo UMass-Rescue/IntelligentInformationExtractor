@@ -35,7 +35,8 @@ class Auth:
         data = {
             "id": str(user_dict["_id"]),
             "username": user_dict["username"],
-            "fullname": user_dict["fullname"],
+            "firstname": user_dict["firstname"],
+            "lastname": user_dict["lastname"],
             "email": user_dict["email"],
             "cases": cases,
         }
