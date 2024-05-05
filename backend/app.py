@@ -7,6 +7,7 @@ import database
 import utils
 import fileserver
 import dummyML
+import os
 # from dotenv import load_dotenv
 # load_dotenv()
 
@@ -72,9 +73,9 @@ def activity_uploadrecord():
     print("in activity_uploadrecord")
     email = request.form.get("email")
     case_id = request.form.get("case_id")
-    record_title = request.form.get("record_title")
     record_description = request.form.get("record_description")
     file = request.files['file']
+    record_title, _ = os.path.splitext(os.path.basename(file.filename))
     categories = request.form.getlist("categories")
 
     user_id = str(database.get_user(email)["_id"])
