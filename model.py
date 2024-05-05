@@ -7,24 +7,24 @@ Original file is located at
     https://colab.research.google.com/drive/1itJLR9nJt0Yip5HsvUeKcYyqWW_m6JJw
 """
 
-!pip install langchain
-!pip install torch
-!pip install faiss-cpu
-!pip install huggingface-hub
-!pip install pypdf
-!pip -q install accelerate
-!pip install llama-cpp-python
-!pip -q install git+https://github.com/huggingface/transformers
-!pip install InstructorEmbedding
-!pip install sentence-transformers==2.2.2
-!pip install python-dotenv==1.0.0
-!pip install --upgrade numpy
-!pip install unstructured
-!pip install transformers
-!pip install sentencepiece
-!pip install accelerate
-!pip install --upgrade --quiet huggingface_hub
-!pip install pdfplumber
+# !pip install langchain
+# !pip install torch
+# !pip install faiss-cpu
+# !pip install huggingface-hub
+# !pip install pypdf
+# !pip -q install accelerate
+# !pip install llama-cpp-python
+# !pip -q install git+https://github.com/huggingface/transformers
+# !pip install InstructorEmbedding
+# !pip install sentence-transformers==2.2.2
+# !pip install python-dotenv==1.0.0
+# !pip install --upgrade numpy
+# !pip install unstructured
+# !pip install transformers
+# !pip install sentencepiece
+# !pip install accelerate
+# !pip install --upgrade --quiet huggingface_hub
+# !pip install pdfplumber
 
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceEmbeddings
