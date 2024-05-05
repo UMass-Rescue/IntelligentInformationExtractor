@@ -30,7 +30,7 @@ function Profile() {
           const profileData = data1.data;
           console.log(profileData, "profileData");
           setFirstName(profileData.firstname);
-          setLastName(profileData.lastName);
+          setLastName(profileData.lastname);
           setCases(profileData.case_count);
           setRequests(profileData.record_count);
         } else {
