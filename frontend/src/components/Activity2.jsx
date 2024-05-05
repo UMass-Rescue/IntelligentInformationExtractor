@@ -80,7 +80,6 @@ export default function App() {
     const formData = new FormData();
     formData.append("userId", "USER_ID"); // Replace with the actual user ID
     formData.append("email", "dummy@gmail.com"); // Replace with the actual user email
-    // const newData = await fetchDataFromAPI(formData);
     fetch(endpoint, {
       method: "POST",
       body: formData,

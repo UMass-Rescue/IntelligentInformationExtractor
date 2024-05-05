@@ -6,7 +6,7 @@ import Profile from "./Profile";
 import SignOutModal from "./Signout";
 
 function DashboardPage() {
-  const [selectedItem, setSelectedItem] = useState("Dashboard");
+  const [selectedItem, setSelectedItem] = useState("Profile");
 
   // Function to handle item selection
   const handleNavbarItemClick = (itemName) => {
