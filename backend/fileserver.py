@@ -12,7 +12,7 @@ def save_file_to_fileserver(file, user_id, case_id, record_id):
     os.makedirs(folder_path, exist_ok=True)
     file.save(file_path)
     # return "file:///D:/Projects/ChildRescue/IntelligentInformationExtractor/backend/"+file_path
-    return "https://drive.google.com/drive/folders/1bCTYlMuzkq-ERCEKVK8q0xOiqke546pl?usp=drive_link"
+    # return "https://drive.google.com/drive/folders/1bCTYlMuzkq-ERCEKVK8q0xOiqke546pl?usp=drive_link"
     return file_path
 
 

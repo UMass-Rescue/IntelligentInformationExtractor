@@ -1,0 +1,16 @@
+langchain
+torch
+faiss-cpu
+huggingface-hub
+pypdf
+accelerate
+llama-cpp-python
+InstructorEmbedding
+sentence-transformers==2.2.2
+python-dotenv==1.0.0
+numpy
+unstructured
+transformers
+sentencepiece
+accelerate
+pdfplumber

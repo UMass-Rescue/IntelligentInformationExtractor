@@ -7,6 +7,7 @@ import database
 import utils
 import fileserver
 import dummyML
+from ml.model_hf import process_file
 import os
 # from dotenv import load_dotenv
 # load_dotenv()
@@ -77,11 +78,14 @@ def activity_uploadrecord():
     file = request.files['file']
     record_title, _ = os.path.splitext(os.path.basename(file.filename))
     categories = request.form.getlist("categories")
-
+    if not file:
+        return utils.error_message("No file selected"), 400
+    
     user_id = str(database.get_user(email)["_id"])
     record_id = utils.generate_uuid()
     record_filepath = fileserver.save_file_to_fileserver(file, user_id, case_id, record_id)
-    output = dummyML.process_file(file, categories)
+    categories = ["Case Details"]
+    output = process_file("./"+record_filepath, categories)
 
     record = database.RecordModel(id=record_id, title=record_title, description=record_description,dateCreated=utils.get_date(),source="local", fileLocation=record_filepath, transcript="", historyQA=output).to_dict()
     database.add_record(email, case_id, record)
