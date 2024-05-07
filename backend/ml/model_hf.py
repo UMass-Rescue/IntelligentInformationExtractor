@@ -52,8 +52,8 @@ def load_pdf(path):
     # Initialize an empty list to hold the data
     data = []
     pdf_documents = pdf_loader.load()
-    print(pdf_documents)
-    print(type(pdf_documents))
+    # print(pdf_documents)
+    # print(type(pdf_documents))
     if pdf_documents:
         data += pdf_documents
 
