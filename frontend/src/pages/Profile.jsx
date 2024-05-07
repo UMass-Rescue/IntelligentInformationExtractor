@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 
 function Profile() {
   // Define state variables for each category
-  const [firstName, setFirstName] = useState("Divija");
-  const [lastName, setLastName] = useState("Palleti");
+  const [firstName, setFirstName] = useState("Vineeth");
+  const [lastName, setLastName] = useState("Dara");
   const [email, setEmail] = useState("dummy@gmail.com");
   const [password, setPassword] = useState("xxxxxxxxxxx");
   const [cases, setCases] = useState(22);
