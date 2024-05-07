@@ -54,7 +54,7 @@ class RecordModel:
         return {
             "id": self.id,
             "title": self.title,
-            "decription": self.description,
+            "description": self.description,
             "dateCreated": self.dateCreated,
             "dateLastAnalysed": self.dateLastAnalysed,
             "source": self.source,
@@ -363,7 +363,7 @@ def getallactivity(email):
                     "record_title": record_title,
                     "record_date": record_date,
                     "user_id": str(user["_id"]),
-                    "url": record["fileLocation"]
+                    "url": "https://drive.google.com/drive/folders/1bCTYlMuzkq-ERCEKVK8q0xOiqke546pl?usp=sharing"
                 })
         print(f"allrecords: data: {data}")
         return success_message(data), 200
@@ -382,33 +382,23 @@ def getRecordCount(email):
         return 0
 
 
-def getrecord(email, case_id, record_id):
-    user = db.users.find_one(
-        {
-            "email": email,
-            "cases.id": case_id,
-        },
-        {
-            "id": 1,
-            "cases.$": 1,
-        }
-    )
+def getrecord(email, record_id):
+    user = db.users.find_one({"email": email})
     if user:
-        case = user["cases"][0]
-        for record in case["records"]:
-            if record["id"] == record_id:
-                data = {
-                    "case_id": case["id"],
-                    "case_title": case["title"],
-                    "record_id": record["id"],
-                    "record_title": record["title"],
-                    "record_date": record["dateCreated"],
-                    "user_id": str(user["_id"]),
-                    "record_description": record["description"],
-                    "record_history": record["historyQA"]
-                }
-                return success_message(data), 200
-        return error_message("Record not found"), 404
+        for case in user["cases"]:
+            for record in case["records"]:
+                if record_id == record["id"]:
+                    data = {
+                        "case_id": case["id"],
+                        "case_title": case["title"],
+                        "record_id": record["id"],
+                        "record_title": record["title"],
+                        "record_date": record["dateCreated"],
+                        "user_id": str(user["_id"]),
+                        "record_description": record["description"],
+                        "record_history": record["historyQA"]
+                    }
+                    return success_message(data), 200
     else:
         print("Data (record, case, user ) not found")
         return error_message("Data not found, record or case is not a valid entry"), 401

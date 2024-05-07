@@ -7,7 +7,7 @@ import database
 import utils
 import fileserver
 import dummyML
-from ml.model import process_file
+from ml.model_hf import process_file
 import os
 # from dotenv import load_dotenv
 # load_dotenv()
@@ -29,12 +29,12 @@ def activity_all():
     email = request.form.get("email")
     return database.getallactivity(email)
 
-@app.route('/activity/record/', methods=["GET"])
+@app.route('/activity/record/', methods=["POST"])
 def activity_record():
     email = request.form.get("email")
-    case_id = request.form.get("case_id")
+    # case_id = request.form.get("case_id")
     record_id = request.form.get("record_id")
-    return database.getrecord(email, case_id, record_id)
+    return database.getrecord(email, record_id)
 
 @app.route('/categories/', methods=["GET"])
 def categories():
@@ -94,7 +94,7 @@ def activity_uploadrecord():
         "record_filepath" : record_filepath,
         "record_history" : output
     }
-    print(f"uploadrecord: data: {data}")
+    # print(f"uploadrecord: data: {data}")
     return utils.success_message(data), 200
 
 @app.route('/profile/', methods=["POST"])
