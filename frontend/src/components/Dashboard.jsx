@@ -5,7 +5,7 @@ import ButtonWithLoading from "./ButttonExtract";
 import FileUpload from "./FileUpload";
 
 
-const BACKEND_URL = 'http://127.0.0.1:5000'
+const BACKEND_URL = 'http://192.168.0.19:5000'
 const email = 'dummy@gmail.com'
 
 function PageNumbers({ currentPage, totalPages, onPageClick }) {

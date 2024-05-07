@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Table, { SelectColumnFilter, StatusPill, FileLink } from "./Table";
 import "../styles.css";
 
-const BACKEND_URL = 'http://127.0.0.1:5000'
+const BACKEND_URL = 'http://192.168.0.19:5000'
 const endpoint = `${BACKEND_URL}/activity/allrecords/`;
 
 function simulateFetch(data, delay = 0) {

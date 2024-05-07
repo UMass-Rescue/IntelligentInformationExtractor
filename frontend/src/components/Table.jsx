@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   useTable,
   useGlobalFilter,
@@ -25,6 +25,8 @@ function GlobalFilter({
   globalFilter,
   setGlobalFilter
 }) {
+
+
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState(globalFilter);
   const onChange = useAsyncDebounce((value) => {
@@ -105,14 +107,51 @@ link
 
 
 export function StatusPill({ value }) {
+
+  console.log(value, "vvvaa")
   
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [data, setData] = useState(null);
 
   const toggleModal = () => {
     console.log(isModalOpen)
     setIsModalOpen(!isModalOpen);
   };
+
+
+
+  useEffect(() => {
+    const BACKEND_URL = 'http://192.168.0.19:5000'
+    const endpoint = `${BACKEND_URL}/activity/record/`;
+
+      const formData = new FormData();
+    formData.append("record_id", value); // Replace with the actual user ID
+    formData.append("email", "dummy@gmail.com"); // Replace with the actual user email
+    fetch(endpoint, {
+      method: "POST",
+      body: formData,
+    })
+    .then(response => {
+      return response.json(); // Parse JSON asynchronously
+    })
+    .then(data1 => {
+     
+      setData(data1.data.record_history);
+     
+      return data;
+      
+    }).then(data => {
+       // Handle parsed data here
+       console.log(data, "data - record_id");
+
+    }).catch(error => {
+        // Handle errors
+        console.error("Error:", error);
+      });
+
+ 
+  }, []);
 
 
   return (
@@ -122,7 +161,7 @@ export function StatusPill({ value }) {
     className="block text-purple-700 bg-white-200 hover:bg-purple-100 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
     type="button"
   >
-  <ReportInfo isModalOpen={isModalOpen} toggleModal={toggleModal} />
+  <ReportInfo isModalOpen={isModalOpen} toggleModal={toggleModal} data={data} />
     
     View Report
   </button>
